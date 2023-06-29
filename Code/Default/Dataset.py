@@ -323,22 +323,9 @@ class SumDataset(data.Dataset):
             #for s in x['rtest']:
             #    rrdic[x['rtest'][s]] = s
             #textc = []
-            for i in range(len(x['rtest'])):
-                #if len(rrdic[i].split(":")) > 1:
-                #    tokens = ".".join(rrdic[i].split(":")[0].split('.')[-2:] + [rrdic[i].split(":")[1]])
-                #else:
-                #    tokens = ".".join(rrdic[i].split(":")[0].split('.')[-2:])
-                #print(tokens, self.splitCamel(tokens))
-                #tmpids = self.Get_Em(self.splitCamel(tokens), self.Code_Voc)#tokenizer.convert_tokens_to_ids(tokenizer.tokenize(tokens))#print(rrdict[i])
-                #print(tmpids)
-                #ans = self.splitCamel(tokens)
-                #ans.remove('.')
-                #print(ans)
-                #print(self.splitCamel(tokens), self.splitCamel(tokens).remove('.'))
-                #assert(0)
-                #textc.append(ans)
-                nodes.append('RTest')
-                types.append(0)
+            # for i in range(len(x['rtest'])):
+            #     nodes.append('RTest')
+            #     types.append(0)
 
             mus = []
             for i in range(len(x['lines'])):
