@@ -323,9 +323,9 @@ class SumDataset(data.Dataset):
             #for s in x['rtest']:
             #    rrdic[x['rtest'][s]] = s
             #textc = []
-            # for i in range(len(x['rtest'])):
-            #     nodes.append('RTest')
-            #     types.append(0)
+            for i in range(len(x['rtest'])):
+                nodes.append('RTest')
+                types.append(0)
 
             mus = []
             for i in range(len(x['lines'])):
@@ -371,31 +371,31 @@ class SumDataset(data.Dataset):
                 nladrow.append(b)
                 nladcol.append(a)
                 nladval.append(1)
-            # for e in x['edge10']:
-            #     if e[0] not in line2method:
-            #         error1 += 1
-            #     a = e[0] + self.Nl_Len
-            #     b = e[1] + methodnum + len(x['ftest'])
-            #     nladrow.append(a)
-            #     nladcol.append(b)
-            #     if (a, b) not in ed:
-            #         ed[(a, b)] = 1
-            #     else:
-            #         pass
-            #         # print(e[0])
-            #         # print(a, b)
-            #         # assert(0)
-            #     if (b, a) not in ed:
-            #         ed[(b, a)] = 1
-            #     else:
-            #         pass
+            for e in x['edge10']:
+                if e[0] not in line2method:
+                    error1 += 1
+                a = e[0] + self.Nl_Len
+                b = e[1] + methodnum + len(x['ftest'])
+                nladrow.append(a)
+                nladcol.append(b)
+                if (a, b) not in ed:
+                    ed[(a, b)] = 1
+                else:
+                    pass
+                    # print(e[0])
+                    # print(a, b)
+                    # assert(0)
+                if (b, a) not in ed:
+                    ed[(b, a)] = 1
+                else:
+                    pass
                     
-            #         # print(a, b)
-            #         # assert(0)
-            #     nladval.append(1)
-            #     nladrow.append(b)
-            #     nladcol.append(a)
-            #     nladval.append(1)
+                    # print(a, b)
+                    # assert(0)
+                nladval.append(1)
+                nladrow.append(b)
+                nladcol.append(a)
+                nladval.append(1)
             for e in x['edge']:
                 if e[0] not in line2method:
                     error2 += 1
