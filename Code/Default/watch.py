@@ -20,7 +20,7 @@ def splitCamel(token):
 p = pickle.load(open(pr + 'res_%d_%s_%s.pkl'%(seed,lr,batch_size), 'rb'))
 f = pickle.load(open(pr + '.pkl', 'rb'))
 
-print(len(f), len(p))
+# print(len(f), len(p))
 #assert(0)
 score = []
 score2 = []
@@ -42,14 +42,14 @@ for _, i in enumerate(p):
     #rrdict = {}
     #for s in f[i]['ftest']:
     #    rrdict[f[i]['ftest'][s]] = ".".join(s.split(":")[0].split(".")[-2:])
-    for x in f[i]['ftest']:
-        print(splitCamel(".".join(x.split(":")[0].split(".")[-2:])), x, ".".join(x.split(":")[0].split(".")[-2:]))
-    print("-----")
-    for x in f[i]['ans']:
-        print(splitCamel(rrdic[x]), rrdic[x], ',')
-    print("-----")
-    print(rrdic, f[i]['ans'])
-    print(splitCamel(rrdic[xs[1][0]]), rrdic[xs[1][0]], ',', xs[1][0], f[i]['ans'])
+    # for x in f[i]['ftest']:
+    #     print(splitCamel(".".join(x.split(":")[0].split(".")[-2:])), x, ".".join(x.split(":")[0].split(".")[-2:]))
+    # print("-----")
+    # for x in f[i]['ans']:
+        # print(splitCamel(rrdic[x]), rrdic[x], ',')
+    # print("-----")
+    # print(rrdic, f[i]['ans'])
+    # print(splitCamel(rrdic[xs[1][0]]), rrdic[xs[1][0]], ',', xs[1][0], f[i]['ans'])
     #print(f[i]['methods'], f[i]['ftest'], f[i]['ans'])
     for x in xs[2]:
         if x in eps:
@@ -72,11 +72,11 @@ a = []
 for i, x in enumerate(score):
     if x != 0:
         a.append(i)
-print(a)
-print(len(score))
-print(score.count(0))
-print(score2.count(0))
-print(eps)
+# print(a)
+# print(len(score))
+# print(score.count(0))
+# print(score2.count(0))
+# print(eps)
 c1 = 0
 for x in score:
     if x < 3:
@@ -85,11 +85,11 @@ c2 = 0
 for x in score:
     if x < 5:
         c2 += 1
-print('top35',c1, c2)
-print(sorted(eps.items(), key=lambda x:x[1]))
+# print('top35',c1, c2)
+# print(sorted(eps.items(), key=lambda x:x[1]))
 
-print(best_ids)
-print(len(best_ids))
+# print(best_ids)
+# print(len(best_ids))
 
 
 best_epoch = sorted(eps.items(), key=lambda x:x[1])[-1][0]
@@ -102,6 +102,13 @@ for idx in p:
     xs = p[idx]
     each_epoch_pred = xs[3]
     best_pred = each_epoch_pred[best_epoch]
+    score_pred = each_epoch_pred[str(best_epoch)+'_pred']
+    print('-'*20)
+    print('Project Number:', idx)
+    print('Correct Answer:', f[idx]['ans'])
+    print(best_pred)
+    print(score_pred)
+    print('-'*20)
     ar = []
     minl = 1e9
     for x in f[idx]['ans']:

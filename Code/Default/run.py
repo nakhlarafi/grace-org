@@ -120,11 +120,14 @@ def train(t = 5, p='Math'):
                             pred = s.argsort(dim=-1)
                             pred = pred.data.cpu().numpy()
                             alst = []
+                            score_dict = {}
 
                             for k in range(len(pred)): 
                                 datat = data[val_set.ids[k]]
                                 maxn = 1e9
                                 lst = pred[k].tolist()[:resmask.sum(dim=-1)[k].item()]#score = np.sum(loss) / numt
+                                for pos in lst:
+                                    score_dict[pos] = s[k, pos].item()
                                 #bans = lst
                                 for x in datat['ans']:
                                     i = lst.index(x)
@@ -132,6 +135,7 @@ def train(t = 5, p='Math'):
                                 score2.append(maxn)
 
                 each_epoch_pred[epoch] = lst
+                each_epoch_pred[str(epoch)+'_pred'] = score_dict
                 score = score2[0]
                 print('curr accuracy is ' + str(score) + "," + str(score2))
                 if score2[0] == 0:
