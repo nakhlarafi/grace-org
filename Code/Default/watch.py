@@ -108,7 +108,9 @@ for idx in p:
     print('Correct Answer:', f[idx]['ans'])
     print(best_pred)
     print(score_pred)
-    print('-'*20)
+    to1 = 0
+    to3 = 0
+    to5 = 0
     ar = []
     minl = 1e9
     for x in f[idx]['ans']:
@@ -117,10 +119,17 @@ for idx in p:
         minl = min(minl, m)
     if minl == 0:
         top1 += 1
+        to1 = 1
     if minl < 3:
         top3 += 1
+        to3 = 1
     if minl < 5:
         top5 += 1
+        to5 = 1
+    print('Top1:', to1)
+    print('Top3:', to3)
+    print('Top5:', to5)
+    print('-'*20)
     mfr.append(minl)
     mar.append(np.mean(ar))
 result_path = os.path.join("result-all")
