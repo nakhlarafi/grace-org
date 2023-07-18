@@ -151,7 +151,7 @@ with open(result_path + '/' + pr, 'w') as f:
     f.write('mfr: %f\n'%np.mean(mfr))
     f.write('mar: %f\n'%np.mean(mar))
 
-best_epoch = sorted(eps.items(), key=lambda x:x[1])[-1][0]
+# best_epoch = sorted(eps.items(), key=lambda x:x[1])[-1][0]
 top_count = [0] * 5  # list to count correct items in each position
 mfr = []
 mar = []
@@ -181,10 +181,10 @@ for idx in p:
     top3 = sum(top_count[:3])
     top5 = sum(top_count)
 
-    print('Current Top1:', top1)
-    print('Current Top3:', top3)
-    print('Current Top5:', top5)
-    print('-'*20)
+    # print('Current Top1:', top1)
+    # print('Current Top3:', top3)
+    # print('Current Top5:', top5)
+    # print('-'*20)
 
 result_path = os.path.join("result-all")
 if not os.path.exists(result_path):
