@@ -19,8 +19,8 @@ class dotdict(dict):
     def __getattr__(self, name):
         return self[name]
 
-NlLen_map = {"Time":5000, "Math":4500, "Lang":1000, "Chart": 2350, "Mockito":1780, "unknown":2200}
-CodeLen_map = {"Time":4000, "Math":2700, "Lang":1100, "Chart":5250, "Mockito":1176, "unknown":2800}
+NlLen_map = {"Time":3900, "Math":4500, "Lang":280, "Chart": 2350, "Mockito":1780, "unknown":2200}
+CodeLen_map = {"Time":1300, "Math":2700, "Lang":300, "Chart":5250, "Mockito":1176, "unknown":2800}
 args = dotdict({
     'NlLen':NlLen_map[sys.argv[2]],
     'CodeLen':CodeLen_map[sys.argv[2]],
@@ -113,21 +113,18 @@ def train(t = 5, p='Math'):
                         for i in range(len(devBatch)):
                             devBatch[i] = gVar(devBatch[i])
                         with torch.no_grad():
-                            l, pre, _ = model(devBatch[0], devBatch[1], devBatch[2], devBatch[3], devBatch[4])
+                            l, pre, _ = model(devBatch[0], devBatch[1], devBatch[2], devBatch[3], devBatch[4], devBatch[5], devBatch[6], devBatch[7])
                             resmask = torch.eq(devBatch[0], 2)
                             s = -pre#-pre[:, :, 1]
                             s = s.masked_fill(resmask == 0, 1e9)
                             pred = s.argsort(dim=-1)
                             pred = pred.data.cpu().numpy()
                             alst = []
-                            score_dict = {}
 
                             for k in range(len(pred)): 
                                 datat = data[val_set.ids[k]]
                                 maxn = 1e9
                                 lst = pred[k].tolist()[:resmask.sum(dim=-1)[k].item()]#score = np.sum(loss) / numt
-                                for pos in lst:
-                                    score_dict[pos] = s[k, pos].item()
                                 #bans = lst
                                 for x in datat['ans']:
                                     i = lst.index(x)
@@ -135,7 +132,6 @@ def train(t = 5, p='Math'):
                                 score2.append(maxn)
 
                 each_epoch_pred[epoch] = lst
-                each_epoch_pred[str(epoch)+'_pred'] = score_dict
                 score = score2[0]
                 print('curr accuracy is ' + str(score) + "," + str(score2))
                 if score2[0] == 0:
@@ -152,7 +148,7 @@ def train(t = 5, p='Math'):
                 model = model.train()
             for i in range(len(dBatch)):
                 dBatch[i] = gVar(dBatch[i])
-            loss, _, _ = model(dBatch[0], dBatch[1], dBatch[2], dBatch[3], dBatch[4])
+            loss, _, _ = model(dBatch[0], dBatch[1], dBatch[2], dBatch[3], dBatch[4], dBatch[5], dBatch[6], dBatch[7])
             print(loss.mean().item())
             optimizer.zero_grad()
             loss = loss.mean()
@@ -173,6 +169,5 @@ if __name__ == "__main__":
     p = sys.argv[2]
     res[int(sys.argv[1])] = train(int(sys.argv[1]), p)
     open('%sres%d_%d_%s_%s.pkl'%(p, int(sys.argv[1]), args.seed, args.lr, args.batch_size), 'wb').write(pickle.dumps(res))
-
 
 
