@@ -102,7 +102,7 @@ for idx in p:
     xs = p[idx]
     each_epoch_pred = xs[3]
     best_pred = each_epoch_pred[best_epoch]
-    score_pred = each_epoch_pred[str(best_epoch)+'_pred']
+    # score_pred = each_epoch_pred[str(best_epoch)+'_pred']
     # print('-'*20)
     # print('Project Number:', idx)
     # print('Correct Answer:', f[idx]['ans'])
@@ -151,52 +151,52 @@ print('-----------------------------')
 #     f.write('mfr: %f\n'%np.mean(mfr))
 #     f.write('mar: %f\n'%np.mean(mar))
 
-# best_epoch = sorted(eps.items(), key=lambda x:x[1])[-1][0]
-top_count = [0] * 5  # list to count correct items in each position
-mfr = []
-mar = []
-for idx in p:
-    xs = p[idx]
-    each_epoch_pred = xs[3]
-    best_pred = each_epoch_pred[best_epoch]
-    score_pred = each_epoch_pred[str(best_epoch)+'_pred']
-    # print('-'*20)
-    # print('Project Number:', idx)
-    # print('Correct Answer:', f[idx]['ans'])
-    # print('Ranking positions:',best_pred)
-    # print('Scores:',score_pred)
-    ar = []
-    minl = 1e9
-    for x in f[idx]['ans']:
-        m = best_pred.index(x)
-        ar.append(m)
-        minl = min(minl, m)
-        if m < len(top_count):  # increment the count if the index is within the list length
-            top_count[m] += 1
-    mfr.append(minl)
-    mar.append(np.mean(ar))
+# # best_epoch = sorted(eps.items(), key=lambda x:x[1])[-1][0]
+# top_count = [0] * 5  # list to count correct items in each position
+# mfr = []
+# mar = []
+# for idx in p:
+#     xs = p[idx]
+#     each_epoch_pred = xs[3]
+#     best_pred = each_epoch_pred[best_epoch]
+#     # score_pred = each_epoch_pred[str(best_epoch)+'_pred']
+#     # print('-'*20)
+#     # print('Project Number:', idx)
+#     # print('Correct Answer:', f[idx]['ans'])
+#     # print('Ranking positions:',best_pred)
+#     # print('Scores:',score_pred)
+#     ar = []
+#     minl = 1e9
+#     for x in f[idx]['ans']:
+#         m = best_pred.index(x)
+#         ar.append(m)
+#         minl = min(minl, m)
+#         if m < len(top_count):  # increment the count if the index is within the list length
+#             top_count[m] += 1
+#     mfr.append(minl)
+#     mar.append(np.mean(ar))
 
-    # calculate top-k values
-    top1 = top_count[0]
-    top3 = sum(top_count[:3])
-    top5 = sum(top_count)
+#     # calculate top-k values
+#     top1 = top_count[0]
+#     top3 = sum(top_count[:3])
+#     top5 = sum(top_count)
 
-    # print('Current Top1:', top1)
-    # print('Current Top3:', top3)
-    # print('Current Top5:', top5)
-    # print('-'*20)
+#     # print('Current Top1:', top1)
+#     # print('Current Top3:', top3)
+#     # print('Current Top5:', top5)
+#     # print('-'*20)
 
-# result_path = os.path.join("result-all")
-# if not os.path.exists(result_path):
-#     os.makedirs(result_path)
+# # result_path = os.path.join("result-all")
+# # if not os.path.exists(result_path):
+# #     os.makedirs(result_path)
 
-print('-------------GMBFL Approach----------------')
-print('Final top1:',top1)
-print('Final top3:',top3)
-print('Final top5:',top5)
-print('mfr:',np.mean(mfr))
-print('mar:',np.mean(mar))
-print('-----------------------------')
+# print('-------------GMBFL Approach----------------')
+# print('Final top1:',top1)
+# print('Final top3:',top3)
+# print('Final top5:',top5)
+# print('mfr:',np.mean(mfr))
+# print('mar:',np.mean(mar))
+# print('-----------------------------')
 
 # with open(result_path + '/' + pr, 'w') as f:
 #     f.write('top1: %d\n' % top1)
