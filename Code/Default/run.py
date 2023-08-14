@@ -20,6 +20,7 @@ class dotdict(dict):
         return self[name]
 
 # math: 2986x977
+# codec: 158x186
 NlLen_map = {"Time":3900, "Math":3000, "Lang":350, "Chart": 2350, "Mockito":1400, "Closure":5000, "Codec":500}
 CodeLen_map = {"Time":1000, "Math":1000, "Lang":350, "Chart":5250, "Mockito":300, "Closure":5000, "Codec":500}
 args = dotdict({
