@@ -96,6 +96,7 @@ best_epoch = sorted(eps.items(), key=lambda x:x[1])[-1][0]
 top1 = 0
 top3 = 0
 top5 = 0
+top10 = 0
 mfr = []
 mar = []
 for idx in p:
@@ -111,6 +112,7 @@ for idx in p:
     to1 = 0
     to3 = 0
     to5 = 0
+    to10 = 0
     ar = []
     minl = 1e9
     for x in f[idx]['ans']:
@@ -126,6 +128,9 @@ for idx in p:
     if minl < 5:
         top5 += 1
         to5 = 1
+    if minl < 10:
+        top10 += 1
+        to10 = 1
     # print('Top1:', to1)
     # print('Top3:', to3)
     # print('Top5:', to5)
@@ -140,6 +145,7 @@ print('--------------Original---------------')
 print('top1:',top1)
 print('top3:',top3)
 print('top5:',top5)
+print('top10:',top10)
 print('mfr:',np.mean(mfr))
 print('mar:',np.mean(mar))
 print('-----------------------------')
