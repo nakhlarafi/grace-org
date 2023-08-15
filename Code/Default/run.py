@@ -22,7 +22,7 @@ class dotdict(dict):
 # math: 2986x977
 # codec: 158x186
 # Compress: 448x1114
-NlLen_map = {"Time":3900, "Math":3000, "Lang":350, "Chart": 2350, "Mockito":1400, "Closure":5000, "Codec":500, "Compress":600}
+NlLen_map = {"Time":3900, "Math":3000, "Lang":350, "Chart": 2350, "Mockito":1400, "Closure":5000, "Codec":500, "Compress":1000}
 CodeLen_map = {"Time":1000, "Math":1000, "Lang":350, "Chart":5250, "Mockito":300, "Closure":5000, "Codec":500, "Compress":1500}
 args = dotdict({
     'NlLen':NlLen_map[sys.argv[2]],
