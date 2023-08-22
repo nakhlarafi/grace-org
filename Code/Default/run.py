@@ -105,6 +105,11 @@ def train(t = 5, p='Math'):
     each_epoch_pred = {}
     for x in dev_set.Nl_Voc:
       rdic[dev_set.Nl_Voc[x]] = x
+    
+    # Training time starts here
+    train_start_time = time.time()
+    cumulative_test_time = 0  # To hold the cumulative testing time across all epochs
+    
     for epoch in range(15):
         index = 0
         for dBatch in tqdm(train_set.Get_Train(args.batch_size)):
@@ -112,7 +117,8 @@ def train(t = 5, p='Math'):
                 accs = []
                 loss = []
                 model = model.eval()
-                
+                # Testing time starts here
+                test_start_time = time.time()
                 score2 = []
                 for k, devBatch in tqdm(enumerate(val_set.Get_Train(len(val_set)))):
                         for i in range(len(devBatch)):
@@ -125,18 +131,25 @@ def train(t = 5, p='Math'):
                             pred = s.argsort(dim=-1)
                             pred = pred.data.cpu().numpy()
                             alst = []
+                            score_dict = {}
 
                             for k in range(len(pred)): 
                                 datat = data[val_set.ids[k]]
                                 maxn = 1e9
                                 lst = pred[k].tolist()[:resmask.sum(dim=-1)[k].item()]#score = np.sum(loss) / numt
+                                for pos in lst:
+                                    score_dict[pos] = s[k, pos].item()
                                 #bans = lst
                                 for x in datat['ans']:
                                     i = lst.index(x)
                                     maxn = min(maxn, i)
                                 score2.append(maxn)
 
+                test_end_time = time.time()  # Testing time ends here
+                total_test_time = test_end_time - test_start_time
+                cumulative_test_time += total_test_time
                 each_epoch_pred[epoch] = lst
+                each_epoch_pred[str(epoch)+'_pred'] = score_dict
                 score = score2[0]
                 print('curr accuracy is ' + str(score) + "," + str(score2))
                 if score2[0] == 0:
@@ -161,6 +174,12 @@ def train(t = 5, p='Math'):
 
             optimizer.step_and_update_lr()
             index += 1
+    train_end_time = time.time()  # Training time ends here
+    total_train_time = train_end_time - train_start_time
+    print(f"TIMING_INFO: Training Time: {total_train_time}, Testing Time: {cumulative_test_time}")
+    with open(f'{p}_timing_data.txt', 'a') as f:  # 'a' mode is for appending to the file
+        f.write(f"TIMING_INFO: Training Time: {total_train_time}, Testing Time: {cumulative_test_time}\n")
+
     return brest, bans, batchn, each_epoch_pred
 
 

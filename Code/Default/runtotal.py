@@ -4,6 +4,7 @@ import time
 import os, sys
 import pickle
 project = sys.argv[1]
+pp = project
 card = [0]
 lst = list(range(len(pickle.load(open(project + '.pkl', 'rb')))))
 singlenums = {'Time':5, 'Math':2, "Lang":10, "Chart":3, "Mockito":4, "Closure":1, 'Codec':1, 'Compress':1, 'Gson':1, 'Cli':1, 'Jsoup':1, 'Csv':1, 'JacksonCore':1}
@@ -26,3 +27,25 @@ for i in tqdm(range(int(len(lst) / totalnum) + 1)):
 p = subprocess.Popen("python3 sum.py %s %d %f %d"%(project, seed, lr, batch_size), shell=True)
 p.wait()
 subprocess.Popen("python3 watch.py %s %d %f %d"%(project, seed, lr, batch_size),shell=True)            
+
+
+# After all subprocesses are complete
+training_times = []
+testing_times = []
+
+# Read the timing data from the file
+with open(f'{pp}_timing_data.txt', 'r') as f:
+    lines = f.readlines()
+
+    for line in lines:
+        match = re.search(r"TIMING_INFO: Training Time: (\d+.\d+), Testing Time: (\d+.\d+)", line)
+        if match:
+            training_times.append(float(match.group(1)))
+            testing_times.append(float(match.group(2)))
+
+# Calculate the total training and testing time
+total_training_time = sum(training_times)
+total_testing_time = sum(testing_times)
+
+print(f"The overall training time is {total_training_time} seconds.")
+print(f"The overall testing time is {total_testing_time} seconds.")
