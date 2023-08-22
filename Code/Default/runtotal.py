@@ -3,6 +3,7 @@ from tqdm import tqdm
 import time
 import os, sys
 import pickle
+import re
 project = sys.argv[1]
 pp = project
 card = [0]
