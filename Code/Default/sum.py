@@ -3,7 +3,7 @@ import os
 import sys
 versionNum = {'Lang': 65, 'Time': 27, 'Chart': 26, 'Math': 106, 'Closure': 133, 'Mockito': 38,
                    'Cli': 40, 'Codec': 18, 'Csv': 16, 'CommonsJXPath': 14,
-                   'JacksonCore': 13, 'JacksonDatabind': 39, 'JacksonXml': 5, 'Jsoup': 93, 'Compress':47, 'Gson':18}
+                   'JacksonCore': 20, 'JacksonDatabind': 39, 'JacksonXml': 5, 'Jsoup': 93, 'Compress':47, 'Gson':18}
 proj = sys.argv[1]
 seed = int(sys.argv[2])
 lr = float(sys.argv[3])
