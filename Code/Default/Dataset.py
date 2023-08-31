@@ -443,7 +443,7 @@ class SumDataset(data.Dataset):
                 #nlad[a, b] = 1
                 #nlad[b, a] = 1
            
-            '''for e in x['edge3']:
+            for e in x['propagation_edges']:
                 a = e[0] + self.Nl_Len#len(x['ftest']) + methodnum
                 b = e[1] + self.Nl_Len#len(x['ftest']) + methodnum
                 if a == b:
@@ -467,7 +467,7 @@ class SumDataset(data.Dataset):
                 nladval.append(1)
                 nladrow.append(b)
                 nladcol.append(a)
-                nladval.append(1)'''
+                nladval.append(1)
             '''for e in x['edge4']:
                 #assert(0)
                 a = e[0] + len(x['ftest']) + methodnum 
