@@ -25,8 +25,8 @@ class dotdict(dict):
 # Gson 898x312
 # Cli 497x293
 # JacksonCore 289x144
-NlLen_map = {"Time":3900, "Math":4500, "Lang":500, "Chart": 2350, "Mockito":1400, "Closure":5000, "Codec":500, "Compress":1000, "Gson":900, "Cli":1000, "Jsoup":2000, "Csv":500, "JacksonCore":1000, 'JacksonXml':500}
-CodeLen_map = {"Time":1000, "Math":2700, "Lang":500, "Chart":5250, "Mockito":300, "Closure":5000, "Codec":500, "Compress":1500, "Gson":350, "Cli":1000, "Jsoup":2000, "Csv":500, "JacksonCore":1000, 'JacksonXml':500}
+NlLen_map = {"Time":3900, "Math":4500, "Lang":500, "Chart": 2350, "Mockito":1400, "Closure":5000, "Codec":500, "Compress":1000, "Gson":1000, "Cli":1000, "Jsoup":2000, "Csv":500, "JacksonCore":1000, 'JacksonXml':500}
+CodeLen_map = {"Time":1000, "Math":2700, "Lang":500, "Chart":5250, "Mockito":300, "Closure":5000, "Codec":500, "Compress":1500, "Gson":1000, "Cli":1000, "Jsoup":2000, "Csv":500, "JacksonCore":1000, 'JacksonXml':500}
 args = dotdict({
     'NlLen':NlLen_map[sys.argv[2]],
     'CodeLen':CodeLen_map[sys.argv[2]],
