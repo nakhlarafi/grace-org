@@ -3,4 +3,4 @@
 nvidia-smi -L
 source /etc/profile.d/modules.sh
 module load anaconda/3.2022.10
-python runtotal.py JacksonXml
+python runtotal.py Jsoup
