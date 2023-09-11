@@ -20,7 +20,7 @@ def splitCamel(token):
 p = pickle.load(open(pr + 'res_%d_%s_%s.pkl'%(seed,lr,batch_size), 'rb'))
 f = pickle.load(open(pr + '.pkl', 'rb'))
 
-print(len(f), len(p))
+# print(len(f), len(p))
 #assert(0)
 score = []
 score2 = []
@@ -71,7 +71,7 @@ for _, i in enumerate(p):
     #print(xs[2])
     #score.append(maxn)
 
-print(score)
+# print(score)
 
 with open(pr + 'result_final_%d_%s_%s'%(seed,lr, batch_size), 'w') as pp:
     pp.write("lr: %f seed %d batch_size %d\n"%(lr, seed, batch_size))
@@ -119,8 +119,8 @@ for idx in p:
     print('-'*20)
     print('Project Number:', idx)
     print('Correct Answer:', f[idx]['ans'])
-    print(best_pred)
-    print(score_pred)
+    # print(best_pred)
+    # print(score_pred)
     ar = []
     minl = 1e9
     to1 = 0
@@ -154,14 +154,14 @@ result_path = os.path.join("result-all")
 if not os.path.exists(result_path):
     os.makedirs(result_path)
 
-print('------------Original-----------------')
+print('########Original#########')
 print('top1:',top1)
 print('top3:',top3)
 print('top5:',top5)
 print('top10:',top10)
 print('mfr:',np.mean(mfr))
 print('mar:',np.mean(mar))
-print('-----------------------------')
+print('###############')
 
 # with open(result_path + '/' + pr, 'w') as f:
 #     f.write('top1: %d\n'%top1)
@@ -208,13 +208,13 @@ for idx in p:
 # if not os.path.exists(result_path):
 #     os.makedirs(result_path)
 
-print('------------GBMFL-----------------')
+print('########GBMFL########')
 print('Final top1:',top1)
 print('Final top3:',top3)
 print('Final top5:',top5)
 print('mfr:',np.mean(mfr))
 print('mar:',np.mean(mar))
-print('-----------------------------')
+print('################')
 
 # with open(result_path + '/' + pr, 'w') as f:
 #     f.write('top1: %d\n' % top1)
