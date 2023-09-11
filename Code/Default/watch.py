@@ -116,7 +116,7 @@ for idx in p:
     each_epoch_pred = xs[3]
     best_pred = each_epoch_pred[best_epoch]
     score_pred = each_epoch_pred[str(best_epoch)+'_pred']
-    print('-'*20)
+    # print('-'*20)
     print('Project Number:', idx)
     print('Correct Answer:', f[idx]['ans'])
     # print(best_pred)
@@ -149,7 +149,7 @@ for idx in p:
     print('Top3:', to3)
     print('Top5:', to5)
     print('Top10:', to10)
-    print('-'*20)
+    # print('-'*20)
 result_path = os.path.join("result-all")
 if not os.path.exists(result_path):
     os.makedirs(result_path)
