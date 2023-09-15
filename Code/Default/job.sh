@@ -5,4 +5,4 @@
 
 source /etc/profile.d/modules.sh
 module load anaconda/3.2022.10
-python runtotal.py Compress
+python runtotal.py Closure
