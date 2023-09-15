@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J Test-GPUs --mem=120GB --account=r_mdnakh --gpus=40gb:1
+#SBATCH -J grace-closure-pruned --mem=120GB --account=r_mdnakh --gpus=40gb:1
 #SBATCH --mail-type=BEGIN,END 
 #SBATCH --mail-user=nakhla054@gmail.com 
 
