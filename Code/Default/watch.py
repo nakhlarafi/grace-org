@@ -119,8 +119,8 @@ for idx in p:
     # print('-'*20)
     print('Project Number:', idx)
     print('Correct Answer:', f[idx]['ans'])
-    # print(best_pred)
-    # print(score_pred)
+    print(best_pred)
+    print(score_pred)
     ar = []
     minl = 1e9
     to1 = 0
