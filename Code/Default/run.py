@@ -111,7 +111,7 @@ def train(t = 5, p='Math'):
     train_start_time = time.time()
     cumulative_test_time = 0  # To hold the cumulative testing time across all epochs
     
-    for epoch in range(15):
+    for epoch in range(10):
         index = 0
         for dBatch in tqdm(train_set.Get_Train(args.batch_size)):
             if index == 0:
