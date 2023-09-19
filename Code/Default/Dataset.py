@@ -28,7 +28,7 @@ dmap = {
     'Csv':{0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 9, 9: 10, 10: 11, 11: 12, 12: 13, 13: 14, 14: 15, 15: 16},
     'JacksonCore': {0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 9, 9: 10, 10: 11, 11: 12, 12: 14, 13: 15, 14: 16, 15: 17, 16: 18, 17: 19, 18: 20},
     'JacksonXml': {0: 1, 1: 2, 2: 3, 3: 4, 4: 5},
-    'Collections': {0:25, 1:26}
+    'Collections': {0: 25, 1: 26}
 }
 class SumDataset(data.Dataset):
     def __init__(self, config, dataName="train", proj="Math", testid=0, lst=[]):
