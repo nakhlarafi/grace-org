@@ -95,7 +95,14 @@ def train(t = 5, p='Math'):
     if use_cuda:
         print('using GPU')
         model = model.cuda()
-        initial_memory_allocated = torch.cuda.memory_allocated()
+        if use_cuda:
+        total_memory = torch.cuda.get_device_properties(0).total_memory / (1024**2)  # in MB
+        allocated_memory = torch.cuda.memory_allocated() / (1024**2)  # in MB
+        cached_memory = torch.cuda.memory_reserved() / (1024**2)  # in MB
+        print(f"Total GPU Memory: {total_memory:.2f} MB")
+        print(f"GPU Memory Allocated: {allocated_memory:.2f} MB")
+        print(f"GPU Memory Cached: {cached_memory:.2f} MB")
+        # initial_memory_allocated = torch.cuda.memory_allocated()
     maxl = 1e9
     optimizer = ScheduledOptim(optim.Adam(model.parameters(), lr=args.lr), args.embedding_size, 4000)
     maxAcc = 0
@@ -174,10 +181,10 @@ def train(t = 5, p='Math'):
             optimizer.zero_grad()
             loss = loss.mean()
             loss.backward()
-            if use_cuda:
-                current_memory_allocated = torch.cuda.memory_allocated()
-                memory_difference = (current_memory_allocated - initial_memory_allocated) / (1024 ** 2)  # Convert bytes to MB
-                print(f"GPU Memory Used: {memory_difference:.2f} MB")
+            # if use_cuda:
+            #     current_memory_allocated = torch.cuda.memory_allocated()
+            #     memory_difference = (current_memory_allocated - initial_memory_allocated) / (1024 ** 2)  # Convert bytes to MB
+            #     print(f"GPU Memory Used: {memory_difference:.2f} MB")
 
             optimizer.step_and_update_lr()
             index += 1
