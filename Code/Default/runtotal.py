@@ -4,6 +4,7 @@ import time
 import os, sys
 import pickle
 import re
+import GPUtil
 project = sys.argv[1]
 pp = project
 card = [0]
