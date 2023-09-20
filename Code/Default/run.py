@@ -101,8 +101,6 @@ def train(t = 5, p='Math'):
         memory_in_bytes = num_params * 4  # 4 bytes for a 32-bit float
         print(f"Approximate model memory: {memory_in_bytes / (1024 * 1024):.2f} MB")
     
-    # Call the function to print GPU memory stats
-    print_gpu_memory()
     maxl = 1e9
     optimizer = ScheduledOptim(optim.Adam(model.parameters(), lr=args.lr), args.embedding_size, 4000)
     maxAcc = 0
