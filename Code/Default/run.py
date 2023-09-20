@@ -90,16 +90,11 @@ def train(t = 5, p='Math'):
     args.Nl_Vocsize = len(train_set.Nl_Voc)
     args.Vocsize = len(train_set.Char_Voc)
 
-    print(dev_set.ids)
+    # print(dev_set.ids)
     model = NlEncoder(args)
     if use_cuda:
         print('using GPU')
         model = model.cuda()
-
-        # Calculate and display the memory usage of the model parameters
-        num_params = sum(p.numel() for p in model.parameters())
-        memory_in_bytes = num_params * 4  # 4 bytes for a 32-bit float
-        print(f"Approximate model memory: {memory_in_bytes / (1024 * 1024):.2f} MB")
     
     maxl = 1e9
     optimizer = ScheduledOptim(optim.Adam(model.parameters(), lr=args.lr), args.embedding_size, 4000)
@@ -160,6 +155,13 @@ def train(t = 5, p='Math'):
                 each_epoch_pred[str(epoch)+'_pred'] = score_dict
                 score = score2[0]
                 print('curr accuracy is ' + str(score) + "," + str(score2))
+                
+                # Calculate and display the memory usage of the model parameters
+                num_params = sum(p.numel() for p in model.parameters())
+                memory_in_bytes = num_params * 4  # 4 bytes for a 32-bit float
+                print('-'*20)
+                print(f"Approximate model memory: {memory_in_bytes / (1024 * 1024):.2f} MB")
+
                 if score2[0] == 0:
                     batchn.append(epoch)
                     
