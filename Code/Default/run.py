@@ -96,16 +96,10 @@ def train(t = 5, p='Math'):
         print('using GPU')
         model = model.cuda()
 
-        # Function to print GPU memory stats
-        def print_gpu_memory():
-            total_memory = torch.cuda.get_device_properties(0).total_memory / (1024**2)  # in MB
-            allocated_memory = torch.cuda.memory_allocated() / (1024**2)  # in MB
-            cached_memory = torch.cuda.memory_reserved() / (1024**2)  # in MB
-            free_memory = total_memory - allocated_memory  # in MB
-            print(f"Total GPU Memory: {total_memory:.2f} MB")
-            print(f"GPU Memory Allocated: {allocated_memory:.2f} MB")
-            print(f"GPU Memory Cached: {cached_memory:.2f} MB")
-            print(f"GPU Memory Free: {free_memory:.2f} MB")
+        # Calculate and display the memory usage of the model parameters
+        num_params = sum(p.numel() for p in model.parameters())
+        memory_in_bytes = num_params * 4  # 4 bytes for a 32-bit float
+        print(f"Approximate model memory: {memory_in_bytes / (1024 * 1024):.2f} MB")
     
     # Call the function to print GPU memory stats
     print_gpu_memory()
