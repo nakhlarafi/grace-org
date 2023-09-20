@@ -7,6 +7,11 @@ import re
 project = sys.argv[1]
 pp = project
 card = [0]
+######
+def get_gpu_memory():
+    GPUs = GPUtil.getGPUs()
+    gpu = GPUs[0]  # assuming you want to monitor the first GPU
+    return gpu.memoryUsed
 
 # Check if the file exists, if yes, delete it
 if os.path.exists(f'{pp}_timing_data.txt'):
@@ -24,9 +29,16 @@ for i in tqdm(range(int(len(lst) / totalnum) + 1)):
     for j in range(totalnum):
         if totalnum * i + j >= len(lst):
             continue
+        ######
+        memory_before = get_gpu_memory()
         cardn =int(j / singlenum)
         p = subprocess.Popen("CUDA_VISIBLE_DEVICES="+str(card[cardn]) + " python3 run.py %d %s %f %d %d"%(lst[totalnum * i + j], project, lr, seed, batch_size), shell=True)
+        
         jobs.append(p)
+        ######
+        memory_after = get_gpu_memory()
+        print(f"Memory used by job {j}: {memory_after - memory_before} MiB")
+
         time.sleep(10)
     for p in jobs:
         p.wait()
