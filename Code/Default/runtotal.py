@@ -17,15 +17,14 @@ def get_gpu_memory():
     return gpu.memoryUsed
 
 
-
-def print_memory_usage():
-    process = psutil.Process(os.getpid())
+def print_gpu_memory_usage():
     while True:
-        # Print resident set size (rss) memory in MB
-        print(f"Memory used: {process.memory_info().rss / (1024 ** 2):.2f} MB")
+        GPUs = GPUtil.getGPUs()
+        for gpu in GPUs:
+            print(f"GPU {gpu.id}: {gpu.memoryUsed}MB / {gpu.memoryTotal}MB")
         time.sleep(5)  # Print every 5 seconds
 
-threading.Thread(target=print_memory_usage, daemon=True).start()
+threading.Thread(target=print_gpu_memory_usage, daemon=True).start()
 
 
 # Check if the file exists, if yes, delete it
