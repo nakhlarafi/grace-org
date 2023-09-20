@@ -5,6 +5,7 @@ import os, sys
 import pickle
 import re
 import GPUtil
+import threading
 project = sys.argv[1]
 pp = project
 card = [0]
@@ -13,6 +14,18 @@ def get_gpu_memory():
     GPUs = GPUtil.getGPUs()
     gpu = GPUs[0]  # assuming you want to monitor the first GPU
     return gpu.memoryUsed
+
+
+
+def print_memory_usage():
+    process = psutil.Process(os.getpid())
+    while True:
+        # Print resident set size (rss) memory in MB
+        print(f"Memory used: {process.memory_info().rss / (1024 ** 2):.2f} MB")
+        time.sleep(5)  # Print every 5 seconds
+
+threading.Thread(target=print_memory_usage, daemon=True).start()
+
 
 # Check if the file exists, if yes, delete it
 if os.path.exists(f'{pp}_timing_data.txt'):
