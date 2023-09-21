@@ -33,7 +33,7 @@ if os.path.exists(f'{pp}_timing_data.txt'):
     os.remove(f'{pp}_timing_data.txt')
 
 lst = list(range(len(pickle.load(open(project + '.pkl', 'rb')))))
-singlenums = {'Time':5, 'Math':2, "Lang":10, "Chart":3, "Mockito":1, "Closure":1, 'Codec':1, 'Compress':1, 'Gson':1, 'Cli':1, 'Jsoup':1, 'Csv':1, 'JacksonCore':1, 'JacksonXml':1, 'Collections':1}
+singlenums = {'Time':5, 'Math':2, "Lang":1, "Chart":3, "Mockito":1, "Closure":1, 'Codec':1, 'Compress':1, 'Gson':1, 'Cli':1, 'Jsoup':1, 'Csv':1, 'JacksonCore':1, 'JacksonXml':1, 'Collections':1}
 singlenum = singlenums[project]
 totalnum = len(card) * singlenum
 lr = 1e-2
