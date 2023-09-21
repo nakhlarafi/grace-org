@@ -159,8 +159,8 @@ def train(t = 5, p='Math'):
                 # Calculate and display the memory usage of the model parameters
                 num_params = sum(p.numel() for p in model.parameters())
                 memory_in_bytes = num_params * 4  # 4 bytes for a 32-bit float
-                print('-'*20)
-                print(f"Approximate model memory: {memory_in_bytes / (1024 * 1024):.2f} MB")
+                # print('-'*20)
+                # print(f"Approximate model memory: {memory_in_bytes / (1024 * 1024):.2f} MB")
 
                 if score2[0] == 0:
                     batchn.append(epoch)
@@ -170,7 +170,7 @@ def train(t = 5, p='Math'):
                     brest = score2
                     bans = lst
                     maxl = score
-                    print("find better score " + str(score) + "," + str(score2))
+                    # print("find better score " + str(score) + "," + str(score2))
                     #save_model(model)
                     #torch.save(model.state_dict(), os.path.join(wandb.run.dir, 'model.pt'))
                 model = model.train()
@@ -190,7 +190,7 @@ def train(t = 5, p='Math'):
             index += 1
     train_end_time = time.time()  # Training time ends here
     total_train_time = train_end_time - train_start_time
-    print(f"TIMING_INFO: Training Time: {total_train_time}, Testing Time: {cumulative_test_time}")
+    # print(f"TIMING_INFO: Training Time: {total_train_time}, Testing Time: {cumulative_test_time}")
     with open(f'{p}_timing_data.txt', 'a') as f:  # 'a' mode is for appending to the file
         f.write(f"TIMING_INFO: Training Time: {total_train_time}, Testing Time: {cumulative_test_time}\n")
 
