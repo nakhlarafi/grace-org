@@ -119,8 +119,8 @@ for idx in p:
     # print('-'*20)
     print('Project Number:', idx)
     print('Correct Answer:', f[idx]['ans'])
-    print(best_pred)
-    print(score_pred)
+    # print(best_pred)
+    # print(score_pred)
     ar = []
     minl = 1e9
     to1 = 0
@@ -154,14 +154,14 @@ result_path = os.path.join("result-all")
 if not os.path.exists(result_path):
     os.makedirs(result_path)
 
-print('########Original#########')
-print('top1:',top1)
-print('top3:',top3)
-print('top5:',top5)
-print('top10:',top10)
-print('mfr:',np.mean(mfr))
-print('mar:',np.mean(mar))
-print('###############')
+# print('########Original#########')
+# print('top1:',top1)
+# print('top3:',top3)
+# print('top5:',top5)
+# print('top10:',top10)
+# print('mfr:',np.mean(mfr))
+# print('mar:',np.mean(mar))
+# print('###############')
 
 # with open(result_path + '/' + pr, 'w') as f:
 #     f.write('top1: %d\n'%top1)
@@ -208,13 +208,13 @@ for idx in p:
 # if not os.path.exists(result_path):
 #     os.makedirs(result_path)
 
-print('########GBMFL########')
-print('Final top1:',top1)
-print('Final top3:',top3)
-print('Final top5:',top5)
-print('mfr:',np.mean(mfr))
-print('mar:',np.mean(mar))
-print('################')
+# print('########GBMFL########')
+# print('Final top1:',top1)
+# print('Final top3:',top3)
+# print('Final top5:',top5)
+# print('mfr:',np.mean(mfr))
+# print('mar:',np.mean(mar))
+# print('################')
 
 # with open(result_path + '/' + pr, 'w') as f:
 #     f.write('top1: %d\n' % top1)
