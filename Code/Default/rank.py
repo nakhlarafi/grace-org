@@ -90,6 +90,8 @@ for x in score:
 
 
 best_epoch = sorted(eps.items(), key=lambda x:x[1])[-1][0]
+project_data = {"projects": []}
+project_entry = {"name": pr, "bugs": []}
 top1 = 0
 top3 = 0
 top5 = 0
@@ -106,7 +108,14 @@ for idx in p:
     print('Correct Answer:', f[idx]['ans'])
     for d in f:
         if d['proj'] == pr+str(dmap[pr][idx]):
-            print(d['methods'])
+            bug_entry = {"bug_id": dmap[pr][idx], "methods": []}
+            for method, rank in d['methods'].items():
+                method_entry = {
+                    "method_signature": method,
+                    "suspicious_rank": score_pred.get(rank, 0)  # Default 0 if not found
+                }
+                bug_entry["methods"].append(method_entry)
+            project_entry["bugs"].append(bug_entry)
     print(best_pred)
     print(score_pred)
     ar = []
@@ -133,40 +142,15 @@ for idx in p:
         to10 = 1
     mfr.append(minl)
     mar.append(np.mean(ar))
-    print('Top1:', to1)
-    print('Top3:', to3)
-    print('Top5:', to5)
-    print('Top10:', to10)
+    # print('Top1:', to1)
+    # print('Top3:', to3)
+    # print('Top5:', to5)
+    # print('Top10:', to10)
     # print('-'*20)
-result_path = os.path.join("result-all")
-if not os.path.exists(result_path):
-    os.makedirs(result_path)
+project_data["projects"].append(project_entry)
 
-top_count = [0] * 5  # list to count correct items in each position
-mfr = []
-mar = []
-for idx in p:
-    xs = p[idx]
-    each_epoch_pred = xs[3]
-    best_pred = each_epoch_pred[best_epoch]
-    score_pred = each_epoch_pred[str(best_epoch)+'_pred']
-    # print('-'*20)
-    # print('Project Number:', idx)
-    # print('Correct Answer:', f[idx]['ans'])
-    # print('Ranking positions:',best_pred)
-    # print('Scores:',score_pred)
-    ar = []
-    minl = 1e9
-    for x in f[idx]['ans']:
-        m = best_pred.index(x)
-        ar.append(m)
-        minl = min(minl, m)
-        if m < len(top_count):  # increment the count if the index is within the list length
-            top_count[m] += 1
-    mfr.append(minl)
-    mar.append(np.mean(ar))
+# Write to JSON file in the result directory
+json_file_path = os.path.join(result_path, 'output.json')
+with open(json_file_path, 'w') as json_file:
+    json.dump(project_data, json_file, indent=4)
 
-    # calculate top-k values
-    top1 = top_count[0]
-    top3 = sum(top_count[:3])
-    top5 = sum(top_count)
