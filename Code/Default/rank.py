@@ -150,7 +150,7 @@ for idx in p:
 project_data["projects"].append(project_entry)
 
 # Write to JSON file in the result directory
-json_file_path = os.path.join(result_path, 'output.json')
+json_file_path = os.path.join('output.json')
 with open(json_file_path, 'w') as json_file:
     json.dump(project_data, json_file, indent=4)
 
