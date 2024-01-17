@@ -128,7 +128,7 @@ for idx in p:
     print('Project Number:', dmap[pr][idx])
     print('Correct Answer:', f[idx]['ans'])
     for d in f:
-        if d['proj'] == pr+dmap[pr][idx]:
+        if d['proj'] == pr+str(dmap[pr][idx]):
             print(d['methods'])
     print(best_pred)
     print(score_pred)
