@@ -49,17 +49,6 @@ for _, i in enumerate(p):
     maxn = 1e9
     xs = p[i]
     score.extend(xs[0])
-    # print(xs)
-    # print(i, xs[0], xs[1], xs[3])
-    # print('###############')
-    # print(i)
-    # print('--------------')
-    # print(xs[0])
-    # print('--------------')
-    # print(xs[1])
-    # print('--------------')
-    # print(xs[3])
-    # print('###############')
     minl = 1e9
     for x in f[i]['ans']:
         m = xs[1].index(x)
@@ -138,6 +127,9 @@ for idx in p:
     # print('-'*20)
     print('Project Number:', dmap[pr][idx])
     print('Correct Answer:', f[idx]['ans'])
+    for d in f:
+        if d['proj'] == pr+dmap[pr][idx]:
+            print(d['methods'])
     print(best_pred)
     print(score_pred)
     ar = []
@@ -173,22 +165,6 @@ result_path = os.path.join("result-all")
 if not os.path.exists(result_path):
     os.makedirs(result_path)
 
-# print('########Original#########')
-# print('top1:',top1)
-# print('top3:',top3)
-# print('top5:',top5)
-# print('top10:',top10)
-# print('mfr:',np.mean(mfr))
-# print('mar:',np.mean(mar))
-# print('###############')
-
-# with open(result_path + '/' + pr, 'w') as f:
-#     f.write('top1: %d\n'%top1)
-#     f.write('top3: %d\n'%top3)
-#     f.write('top5: %d\n'%top5)
-#     f.write('mfr: %f\n'%np.mean(mfr))
-#     f.write('mar: %f\n'%np.mean(mar))
-# best_epoch = sorted(eps.items(), key=lambda x:x[1])[-1][0]
 top_count = [0] * 5  # list to count correct items in each position
 mfr = []
 mar = []
@@ -217,27 +193,3 @@ for idx in p:
     top1 = top_count[0]
     top3 = sum(top_count[:3])
     top5 = sum(top_count)
-
-    # print('Current Top1:', top1)
-    # print('Current Top3:', top3)
-    # print('Current Top5:', top5)
-    # print('-'*20)
-
-# result_path = os.path.join("result-all")
-# if not os.path.exists(result_path):
-#     os.makedirs(result_path)
-
-# print('########GBMFL########')
-# print('Final top1:',top1)
-# print('Final top3:',top3)
-# print('Final top5:',top5)
-# print('mfr:',np.mean(mfr))
-# print('mar:',np.mean(mar))
-# print('################')
-
-# with open(result_path + '/' + pr, 'w') as f:
-#     f.write('top1: %d\n' % top1)
-#     f.write('top3: %d\n' % top3)
-#     f.write('top5: %d\n' % top5)
-#     f.write('mfr: %f\n' % np.mean(mfr))
-#     f.write('mar: %f\n' % np.mean(mar))
