@@ -5,7 +5,7 @@ import os
 from tqdm import tqdm
 from Model import *
 import numpy as np
-import time
+#from annoy import AnnoyIndex
 from nltk import word_tokenize
 import pickle
 from ScheduledOptim import ScheduledOptim
@@ -13,20 +13,14 @@ from nltk.translate.bleu_score import corpus_bleu
 import pandas as pd
 import random
 import sys
-import wandb
-# wandb.init(project="codesum")
+#import wandb
+#wandb.init(project="codesum")
 class dotdict(dict):
     def __getattr__(self, name):
         return self[name]
 
-# math: 2986x977
-# codec: 158x186
-# Compress: 448x1114
-# Gson 898x312
-# Cli 497x293
-# JacksonCore 289x144
-NlLen_map = {"Time":3900, "Math":3000, "Lang":500, "Chart": 2350, "Mockito":1400, "Closure":5000, "Codec":500, "Compress":1000, "Gson":1000, "Cli":1000, "Jsoup":2000, "Csv":500, "JacksonCore":1000, 'JacksonXml':500, 'Collections':500}
-CodeLen_map = {"Time":600, "Math":1000, "Lang":500, "Chart":5250, "Mockito":300, "Closure":10000, "Codec":500, "Compress":1500, "Gson":1000, "Cli":1000, "Jsoup":2000, "Csv":500, "JacksonCore":1000, 'JacksonXml':500, 'Collections':500}
+NlLen_map = {"Time":3900, "Math":4500, "Lang":280, "Chart": 2350, "Mockito":1780, "unknown":2200}
+CodeLen_map = {"Time":1300, "Math":2700, "Lang":300, "Chart":5250, "Mockito":1176, "unknown":2800}
 args = dotdict({
     'NlLen':NlLen_map[sys.argv[2]],
     'CodeLen':CodeLen_map[sys.argv[2]],
@@ -70,45 +64,111 @@ def gVar(data):
         tensor = tensor.cuda()
     return tensor
 
+def train(t = 5, p='Math'):
 
-def test_model(test_set, model_path="checkpointcodeSearch/best_model.ckpt"):
-    # Load the model
+    torch.manual_seed(args.seed)
+    np.random.seed(args.seed)  
+    random.seed(args.seed + t)
+    torch.cuda.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed) 
+
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+    dev_set = SumDataset(args, "test", p, testid=t)
+    val_set = SumDataset(args, "val", p, testid=t)
+    data = pickle.load(open(p + '.pkl', 'rb'))
+    dev_data = pickle.load(open(p + '.pkl', 'rb'))
+    train_set = SumDataset(args, "train", testid=t, proj=p, lst=dev_set.ids + val_set.ids)
+    numt = len(train_set.data[0])
+    args.Code_Vocsize = len(train_set.Code_Voc)
+    args.Nl_Vocsize = len(train_set.Nl_Voc)
+    args.Vocsize = len(train_set.Char_Voc)
+
+    print(dev_set.ids)
     model = NlEncoder(args)
+    load_model(model)
     if use_cuda:
+        print('using GPU')
         model = model.cuda()
-    model.load_state_dict(torch.load(model_path))
+    maxl = 1e9
+    optimizer = ScheduledOptim(optim.Adam(model.parameters(), lr=args.lr), args.embedding_size, 4000)
+    maxAcc = 0
+    minloss = 1e9
+    rdic = {}
+    brest = []
+    bans = []
+    batchn = []
+    each_epoch_pred = {}
+    for x in dev_set.Nl_Voc:
+      rdic[dev_set.Nl_Voc[x]] = x
+    for epoch in range(15):
+        index = 0
+        for dBatch in tqdm(train_set.Get_Train(args.batch_size)):
+            if index == 0:
+                accs = []
+                loss = []
+                model = model.eval()
+                
+                score2 = []
+                for k, devBatch in tqdm(enumerate(val_set.Get_Train(len(val_set)))):
+                        for i in range(len(devBatch)):
+                            devBatch[i] = gVar(devBatch[i])
+                        with torch.no_grad():
+                            l, pre, _ = model(devBatch[0], devBatch[1], devBatch[2], devBatch[3], devBatch[4], devBatch[5], devBatch[6], devBatch[7])
+                            resmask = torch.eq(devBatch[0], 2)
+                            s = -pre#-pre[:, :, 1]
+                            s = s.masked_fill(resmask == 0, 1e9)
+                            pred = s.argsort(dim=-1)
+                            pred = pred.data.cpu().numpy()
+                            alst = []
 
-    # Prepare the test set
-    # Assuming test_set is already an instance of SumDataset or similar
-    # If not, you need to instantiate it here
+                            for k in range(len(pred)): 
+                                datat = data[val_set.ids[k]]
+                                maxn = 1e9
+                                lst = pred[k].tolist()[:resmask.sum(dim=-1)[k].item()]#score = np.sum(loss) / numt
+                                #bans = lst
+                                for x in datat['ans']:
+                                    i = lst.index(x)
+                                    maxn = min(maxn, i)
+                                score2.append(maxn)
 
-    # Set the model to evaluation mode
-    model.eval()
+                each_epoch_pred[epoch] = lst
+                score = score2[0]
+                print('curr accuracy is ' + str(score) + "," + str(score2))
+                if score2[0] == 0:
+                    batchn.append(epoch)
+                    
 
-    # Variable to store predictions
-    predictions = []
-    for testBatch in tqdm(test_set.Get_Train(args.batch_size)):
-        testBatch = [gVar(x) for x in testBatch]
-        with torch.no_grad():
-            # Assuming your model returns predictions as its first output
-            preds = model(*testBatch)[0]  # Modify as per your model's return values
-            predictions.append(preds.cpu().numpy())  # Or handle as needed
+                if  maxl >= score:
+                    brest = score2
+                    bans = lst
+                    maxl = score
+                    print("find better score " + str(score) + "," + str(score2))
+                    #save_model(model)
+                    #torch.save(model.state_dict(), os.path.join(wandb.run.dir, 'model.pt'))
+                model = model.train()
+            for i in range(len(dBatch)):
+                dBatch[i] = gVar(dBatch[i])
+            loss, _, _ = model(dBatch[0], dBatch[1], dBatch[2], dBatch[3], dBatch[4], dBatch[5], dBatch[6], dBatch[7])
+            print(loss.mean().item())
+            optimizer.zero_grad()
+            loss = loss.mean()
+            loss.backward()
 
-    return predictions
+            optimizer.step_and_update_lr()
+            index += 1
+    return brest, bans, batchn, each_epoch_pred
+
+
 
 if __name__ == "__main__":
     args.lr = float(sys.argv[3])
     args.seed = int(sys.argv[4])
     args.batch_size = int(sys.argv[5])
+    np.set_printoptions(threshold=sys.maxsize)
+    res = {}    
     p = sys.argv[2]
-    
-    # Prepare your test dataset
-    test_set = SumDataset(args, "test", p, testid=int(sys.argv[1]))
+    res[int(sys.argv[1])] = train(int(sys.argv[1]), p)
+    open('%sres%d_%d_%s_%s.pkl'%(p, int(sys.argv[1]), args.seed, args.lr, args.batch_size), 'wb').write(pickle.dumps(res))
 
-    # Test the model
-    test_predictions = test_model(test_set)
 
-    # Handle the test_predictions as needed
-    # For example, you can save them to a file
-    with open(f'{p}_test_predictions.pkl', 'wb') as file:
-        pickle.dump(test_predictions, file)
