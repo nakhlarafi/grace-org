@@ -142,6 +142,17 @@ result_path = os.path.join("result-all")
 if not os.path.exists(result_path):
     os.makedirs(result_path)
 
+
+print('---'*20)
+print('------------Result-----------------')
+print('top1:',top1)
+print('top3:',top3)
+print('top5:',top5)
+print('top10:',top10)
+print('mfr:',np.mean(mfr))
+print('mar:',np.mean(mar))
+print('-----------------------------')
+
 top_count = [0] * 5  # list to count correct items in each position
 mfr = []
 mar = []
