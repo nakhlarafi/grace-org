@@ -14,7 +14,7 @@ import pandas as pd
 import random
 import sys
 import wandb
-wandb.init(project="codesum")
+# wandb.init(project="codesum")
 class dotdict(dict):
     def __getattr__(self, name):
         return self[name]
