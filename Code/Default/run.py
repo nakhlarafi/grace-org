@@ -171,8 +171,8 @@ def train(t = 5, p='Math'):
                     bans = lst
                     maxl = score
                     # print("find better score " + str(score) + "," + str(score2))
-                    #save_model(model)
-                    #torch.save(model.state_dict(), os.path.join(wandb.run.dir, 'model.pt'))
+                    save_model(model)
+                    torch.save(model.state_dict(), os.path.join(wandb.run.dir, 'model.pt'))
                 model = model.train()
             for i in range(len(dBatch)):
                 dBatch[i] = gVar(dBatch[i])

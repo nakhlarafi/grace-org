@@ -108,7 +108,7 @@ for idx in p:
     print('Correct Answer:', f[idx]['ans'])
     for d in f:
         if d['proj'] == pr+str(dmap[pr][idx]):
-            bug_entry = {"bug_id": dmap[pr][idx], "methods": []}
+            bug_entry = {"bug_id": dmap[pr][idx], "ground_truth": f[idx]['ans'], "methods": []}
             for method, rank in d['methods'].items():
                 method_entry = {
                     "method_signature": method,
@@ -150,7 +150,7 @@ for idx in p:
 project_data["projects"].append(project_entry)
 
 # Write to JSON file in the result directory
-json_file_path = os.path.join('output.json')
+json_file_path = os.path.join(f'{pr}_rank.json')
 with open(json_file_path, 'w') as json_file:
     json.dump(project_data, json_file, indent=4)
 
