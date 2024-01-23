@@ -13,8 +13,8 @@ from nltk.translate.bleu_score import corpus_bleu
 import pandas as pd
 import random
 import sys
-#import wandb
-#wandb.init(project="codesum")
+import wandb
+wandb.init(project="codesum")
 class dotdict(dict):
     def __getattr__(self, name):
         return self[name]
