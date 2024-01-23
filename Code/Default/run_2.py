@@ -5,7 +5,7 @@ import os
 from tqdm import tqdm
 from Model import *
 import numpy as np
-#from annoy import AnnoyIndex
+import time
 from nltk import word_tokenize
 import pickle
 from ScheduledOptim import ScheduledOptim
@@ -13,14 +13,20 @@ from nltk.translate.bleu_score import corpus_bleu
 import pandas as pd
 import random
 import sys
-#import wandb
-#wandb.init(project="codesum")
+import wandb
+# wandb.init(project="codesum")
 class dotdict(dict):
     def __getattr__(self, name):
         return self[name]
 
-NlLen_map = {"Time":3900, "Math":4500, "Lang":280, "Chart": 2350, "Mockito":1780, "unknown":2200}
-CodeLen_map = {"Time":1300, "Math":2700, "Lang":300, "Chart":5250, "Mockito":1176, "unknown":2800}
+# math: 2986x977
+# codec: 158x186
+# Compress: 448x1114
+# Gson 898x312
+# Cli 497x293
+# JacksonCore 289x144
+NlLen_map = {"Time":3900, "Math":3000, "Lang":500, "Chart": 2350, "Mockito":1400, "Closure":5000, "Codec":500, "Compress":1000, "Gson":1000, "Cli":1000, "Jsoup":2000, "Csv":500, "JacksonCore":1000, 'JacksonXml':500, 'Collections':500}
+CodeLen_map = {"Time":600, "Math":1000, "Lang":500, "Chart":5250, "Mockito":300, "Closure":10000, "Codec":500, "Compress":1500, "Gson":1000, "Cli":1000, "Jsoup":2000, "Csv":500, "JacksonCore":1000, 'JacksonXml':500, 'Collections':500}
 args = dotdict({
     'NlLen':NlLen_map[sys.argv[2]],
     'CodeLen':CodeLen_map[sys.argv[2]],
@@ -84,12 +90,13 @@ def train(t = 5, p='Math'):
     args.Nl_Vocsize = len(train_set.Nl_Voc)
     args.Vocsize = len(train_set.Char_Voc)
 
-    print(dev_set.ids)
+    # print(dev_set.ids)
     model = NlEncoder(args)
     load_model(model)
     if use_cuda:
         print('using GPU')
         model = model.cuda()
+    
     maxl = 1e9
     optimizer = ScheduledOptim(optim.Adam(model.parameters(), lr=args.lr), args.embedding_size, 4000)
     maxAcc = 0
@@ -101,7 +108,12 @@ def train(t = 5, p='Math'):
     each_epoch_pred = {}
     for x in dev_set.Nl_Voc:
       rdic[dev_set.Nl_Voc[x]] = x
-    for epoch in range(15):
+    
+    # Training time starts here
+    train_start_time = time.time()
+    cumulative_test_time = 0  # To hold the cumulative testing time across all epochs
+    
+    for epoch in range(10):
         index = 0
         for dBatch in tqdm(train_set.Get_Train(args.batch_size)):
             if index == 0:
@@ -109,6 +121,8 @@ def train(t = 5, p='Math'):
                 loss = []
                 model = model.eval()
                 
+                # Testing time starts here
+                test_start_time = time.time()
                 score2 = []
                 for k, devBatch in tqdm(enumerate(val_set.Get_Train(len(val_set)))):
                         for i in range(len(devBatch)):
@@ -121,20 +135,34 @@ def train(t = 5, p='Math'):
                             pred = s.argsort(dim=-1)
                             pred = pred.data.cpu().numpy()
                             alst = []
+                            score_dict = {}
 
                             for k in range(len(pred)): 
                                 datat = data[val_set.ids[k]]
                                 maxn = 1e9
                                 lst = pred[k].tolist()[:resmask.sum(dim=-1)[k].item()]#score = np.sum(loss) / numt
+                                for pos in lst:
+                                    score_dict[pos] = s[k, pos].item()
                                 #bans = lst
                                 for x in datat['ans']:
                                     i = lst.index(x)
                                     maxn = min(maxn, i)
                                 score2.append(maxn)
 
+                test_end_time = time.time()  # Testing time ends here
+                total_test_time = test_end_time - test_start_time
+                cumulative_test_time += total_test_time
                 each_epoch_pred[epoch] = lst
+                each_epoch_pred[str(epoch)+'_pred'] = score_dict
                 score = score2[0]
                 print('curr accuracy is ' + str(score) + "," + str(score2))
+                
+                # Calculate and display the memory usage of the model parameters
+                num_params = sum(p.numel() for p in model.parameters())
+                memory_in_bytes = num_params * 4  # 4 bytes for a 32-bit float
+                # print('-'*20)
+                # print(f"Approximate model memory: {memory_in_bytes / (1024 * 1024):.2f} MB")
+
                 if score2[0] == 0:
                     batchn.append(epoch)
                     
@@ -143,9 +171,9 @@ def train(t = 5, p='Math'):
                     brest = score2
                     bans = lst
                     maxl = score
-                    print("find better score " + str(score) + "," + str(score2))
-                    #save_model(model)
-                    #torch.save(model.state_dict(), os.path.join(wandb.run.dir, 'model.pt'))
+                    # print("find better score " + str(score) + "," + str(score2))
+                    save_model(model)
+                    # torch.save(model.state_dict(), os.path.join(wandb.run.dir, 'model.pt'))
                 model = model.train()
             for i in range(len(dBatch)):
                 dBatch[i] = gVar(dBatch[i])
@@ -154,9 +182,19 @@ def train(t = 5, p='Math'):
             optimizer.zero_grad()
             loss = loss.mean()
             loss.backward()
+            # if use_cuda:
+            #     current_memory_allocated = torch.cuda.memory_allocated()
+            #     memory_difference = (current_memory_allocated - initial_memory_allocated) / (1024 ** 2)  # Convert bytes to MB
+            #     print(f"GPU Memory Used: {memory_difference:.2f} MB")
 
             optimizer.step_and_update_lr()
             index += 1
+    train_end_time = time.time()  # Training time ends here
+    total_train_time = train_end_time - train_start_time
+    # print(f"TIMING_INFO: Training Time: {total_train_time}, Testing Time: {cumulative_test_time}")
+    with open(f'{p}_timing_data.txt', 'a') as f:  # 'a' mode is for appending to the file
+        f.write(f"TIMING_INFO: Training Time: {total_train_time}, Testing Time: {cumulative_test_time}\n")
+
     return brest, bans, batchn, each_epoch_pred
 
 
