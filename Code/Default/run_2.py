@@ -114,10 +114,11 @@ def test(t=5, p='Math', model_dir="checkpointcodeSearch"):
             pred = pred.data.cpu().numpy()
 
             score_dict = {}
+            project_name_id = ''
             score2 = []
             for idx in range(len(pred)):
                 datat = data[test_set.ids[idx]]
-                print(datat['proj'])
+                project_name_id = datat['proj']
                 maxn = 1e9
                 lst = pred[idx].tolist()[:resmask.sum(dim=-1)[idx].item()]
                 for pos in lst:
@@ -138,7 +139,7 @@ def test(t=5, p='Math', model_dir="checkpointcodeSearch"):
 
     print(f"Total Testing Time: {cumulative_test_time}")
 
-    return brest, bans, batchn, each_epoch_pred
+    return project_name_id, each_epoch_pred
 
 # Main execution
 if __name__ == "__main__":
@@ -147,9 +148,9 @@ if __name__ == "__main__":
     args.batch_size = int(sys.argv[5])
     p = sys.argv[2]
     res = {}
-    print('-'*50)
-    print(int(sys.argv[1]))
-    res[int(sys.argv[1])] = test(int(sys.argv[1]), p)
+    # print('-'*50)
+    # print(int(sys.argv[1]))
+    project_name_id, result = test(int(sys.argv[1]), p)
     # print(res)
-    open('%sres%d_%d_%s_%s.pkl'%(p, int(sys.argv[1]), args.seed, args.lr, args.batch_size), 'wb').write(pickle.dumps(res))
+    open(f'{p}res_{project_name_id}.pkl')
   
