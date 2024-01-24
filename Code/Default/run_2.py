@@ -150,6 +150,7 @@ if __name__ == "__main__":
     args.lr = float(sys.argv[3])
     args.seed = int(sys.argv[4])
     args.batch_size = int(sys.argv[5])
+    res = {} 
     p = sys.argv[2]
     res[int(sys.argv[1])] = test_leave_one_out(int(sys.argv[1]), p)
     open('%sres%d_%d_%s_%s.pkl'%(p, int(sys.argv[1]), args.seed, args.lr, args.batch_size), 'wb').write(pickle.dumps(res))
