@@ -124,11 +124,11 @@ def test(t=5, p='Math'):
             score_dict = {}
             score2 = []
             for k in range(len(pred)):
-                datat = data[test_set.ids[idx]]
+                datat = data[test_set.ids[k]]
                 maxn = 1e9
-                lst = pred[idx].tolist()[:resmask.sum(dim=-1)[idx].item()]
+                lst = pred[k].tolist()[:resmask.sum(dim=-1)[k].item()]
                 for pos in lst:
-                    score_dict[pos] = s[idx, pos].item()
+                    score_dict[pos] = s[k, pos].item()
                 for x in datat['ans']:
                     i = lst.index(x)
                     maxn = min(maxn, i)
