@@ -130,7 +130,7 @@ def test(t=5, p='Math'):
                     i = lst.index(x)
                     maxn = min(maxn, i)
                 score2.append(maxn)
-
+            print(score_dict)
             test_end_time = time.time()
             cumulative_test_time += test_end_time - test_start_time
             each_epoch_pred[k] = lst
