@@ -104,6 +104,7 @@ def test(t=5, p='Math'):
     each_epoch_pred = {}
     cumulative_test_time = 0
     print('edike aisi bhai')
+    print(test_set)
     # Testing loop
     for k, testBatch in tqdm(enumerate(test_set.Get_Train(args.batch_size))):
         test_start_time = time.time()
