@@ -144,7 +144,7 @@ def test(t=5, p='Math'):
             if score2[0] == 0:
                 batchn.append(k)
             bans.append(lst)
-
+        k = k+1
     # Print total testing time
     print(f"Total Testing Time: {cumulative_test_time}")
 
