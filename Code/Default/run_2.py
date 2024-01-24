@@ -129,8 +129,8 @@ def test(t=5, p='Math', model_dir="checkpointcodeSearch"):
                 score2.append(maxn)
 
             cumulative_test_time += time.time() - test_start_time
-            each_epoch_pred[k] = lst
-            each_epoch_pred[str(k) + '_pred'] = score_dict
+            each_epoch_pred['ranking'] = lst
+            each_epoch_pred['score'] = score_dict
             brest.append(score2)
             if score2[0] == 0:
                 batchn.append(k)
