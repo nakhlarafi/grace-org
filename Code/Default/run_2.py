@@ -82,7 +82,7 @@ def test(t=5, p='Math'):
     torch.backends.cudnn.deterministic = True
 
     # Load the testing data
-    test_set = SumDataset(args, "test", p, testid=t)
+    test_set = SumDataset(args, "train", p, testid=t)
     data = pickle.load(open(p + '.pkl', 'rb'))
     args.Code_Vocsize = len(test_set.Code_Voc)
     args.Nl_Vocsize = len(test_set.Nl_Voc)
