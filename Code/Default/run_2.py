@@ -74,7 +74,9 @@ def test(p='Math', t=5):
     # Load the datasets
     dev_set = SumDataset(args, "test", p, testid=t)
     data = pickle.load(open(p + '.pkl', 'rb'))
-
+    args.Code_Vocsize = len(dev_set.Code_Voc)
+    args.Nl_Vocsize = len(dev_set.Nl_Voc)
+    args.Vocsize = len(dev_set.Char_Voc)
     # Initialize and load the model
     model = NlEncoder(args)
     if use_cuda:
