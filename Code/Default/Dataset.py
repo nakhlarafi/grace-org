@@ -98,14 +98,13 @@ class SumDataset(data.Dataset):
                     tmp.append(data[i][x])
                 self.data.append(tmp)
         elif dataName == 'test_only':
-            # Use all data as test data
-            all_data = pickle.load(open(self.proj + 'data.pkl', 'rb'))
-            self.data = all_data
-            # print(self.data)
-            # pdb.set_trace()
-            # print(list(range(len(data[0]))))
-            # pdb.set_trace()
+           
             self.ids = list(range(len(data[0])))
+            for i in range(len(data)):
+                tmp = []
+                for x in self.ids:
+                    tmp.append(data[i][x])
+                self.data.append(tmp)
         else:
             testnum = 1#int(0.1 * len(data[0]))
             ids = []
