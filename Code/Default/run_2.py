@@ -154,7 +154,7 @@ if __name__ == "__main__":
     # print(res)
     
     # Assuming 'p' and 'result' are defined earlier in your code
-    file_path = f'{p}res_{result[0]}.pkl'
+    file_path = f'crossvalidation/{p}/{p}res_{result[0]}.pkl'
 
     # Check if the file exists
     if os.path.exists(file_path):
