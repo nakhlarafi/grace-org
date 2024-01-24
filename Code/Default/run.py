@@ -48,12 +48,12 @@ os.environ['PYTHONHASHSEED'] = str(args.seed)
 def save_model(model, dirs = "checkpointcodeSearch"):
     if not os.path.exists(dirs):
         os.makedirs(dirs)
-    torch.save(model.state_dict(), dirs + f'/{p}_model.ckpt')
+    torch.save(model.state_dict(), dirs + '/best_model.ckpt')
 
 
 def load_model(model, dirs="checkpointcodeSearch"):
     assert os.path.exists(dirs + '/best_model.ckpt'), 'Weights for saved model not found'
-    model.load_state_dict(torch.load(dirs + f'/{p}_model.ckpt'))
+    model.load_state_dict(torch.load(dirs + '/best_model.ckpt'))
 
 use_cuda = torch.cuda.is_available()
 def gVar(data):
