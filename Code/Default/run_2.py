@@ -70,88 +70,54 @@ def gVar(data):
         tensor = tensor.cuda()
     return tensor
 
-def test_leave_one_out(t=5, p='Math'):
-    torch.manual_seed(args.seed)
-    np.random.seed(args.seed)  
-    random.seed(args.seed + t)
-    torch.cuda.manual_seed(args.seed)
-    torch.cuda.manual_seed_all(args.seed)
-
-    torch.backends.cudnn.benchmark = False
-    torch.backends.cudnn.deterministic = True
-
-    # Load datasets
-    test_set = SumDataset(args, "test", p, testid=t)
+def test(p='Math', t=5):
+    # Load the datasets
+    dev_set = SumDataset(args, "test", p, testid=t)
     data = pickle.load(open(p + '.pkl', 'rb'))
 
-    args.Code_Vocsize = len(test_set.Code_Voc)
-    args.Nl_Vocsize = len(test_set.Nl_Voc)
-    args.Vocsize = len(test_set.Char_Voc)
-
-
-    # Initialize and load the model from the checkpoint
+    # Initialize and load the model
     model = NlEncoder(args)
-    load_model(model, dirs="checkpointcodeSearch")
     if use_cuda:
         model = model.cuda()
+    load_model(model, dirs="checkpointcodeSearch")
 
-    model.eval()  # Set model to evaluation mode
+    # Set the model to evaluation mode
+    model.eval()
 
-    # Variables to store results
-    brest = []
-    bans = []
-    batchn = []
-    each_epoch_pred = {}
-    cumulative_test_time = 0
+    # Container for results
+    test_results = []
+    score_dict = {}
 
     # Testing loop
-    for k, testBatch in tqdm(enumerate(test_set.Get_Train(args.batch_size))):
-        test_start_time = time.time()  # Start timing for this test batch
-        testBatch = [gVar(x) for x in testBatch]
+    for k, devBatch in tqdm(enumerate(dev_set.Get_Train(args.batch_size))):
+        devBatch = [gVar(x) for x in devBatch]  # Prepare batch data
         with torch.no_grad():
-            l, pre, _ = model(testBatch[0], testBatch[1], testBatch[2], testBatch[3], testBatch[4], testBatch[5], testBatch[6], testBatch[7])
-            resmask = torch.eq(testBatch[0], 2)
-            s = -pre
+            l, pre, _ = model(devBatch[0], devBatch[1], devBatch[2], devBatch[3], devBatch[4], devBatch[5], devBatch[6], devBatch[7])
+            resmask = torch.eq(devBatch[0], 2)
+            s = -pre  # Adjust based on how your model outputs predictions
             s = s.masked_fill(resmask == 0, 1e9)
             pred = s.argsort(dim=-1)
             pred = pred.data.cpu().numpy()
 
-            score_dict = {}
-            score2 = []
-            for idx in range(len(pred)):
-                datat = data[test_set.ids[idx]]
+            for k in range(len(pred)): 
+                datat = data[dev_set.ids[k]]
                 maxn = 1e9
-                lst = pred[idx].tolist()[:resmask.sum(dim=-1)[idx].item()]
+                lst = pred[k].tolist()[:resmask.sum(dim=-1)[k].item()]
                 for pos in lst:
-                    score_dict[pos] = s[idx, pos].item()
+                    score_dict[pos] = s[k, pos].item()
                 for x in datat['ans']:
                     i = lst.index(x)
                     maxn = min(maxn, i)
-                score2.append(maxn)
+                test_results.append(maxn)
 
-            test_end_time = time.time()  # End timing for this test batch
-            cumulative_test_time += (test_end_time - test_start_time)
-
-            each_epoch_pred[k] = lst
-            each_epoch_pred[str(k) + '_pred'] = score_dict
-            brest.append(score2)
-            if score2[0] == 0:
-                batchn.append(k)
-            bans.append(lst)
-
-    # Save timing data
-    with open(f'{p}_timing_data.txt', 'a') as f:
-        f.write(f"Testing Time: {cumulative_test_time}\n")
-
-    return brest, bans, batchn, each_epoch_pred
+    return test_results, score_dict
 
 # Main execution
 if __name__ == "__main__":
     args.lr = float(sys.argv[3])
     args.seed = int(sys.argv[4])
     args.batch_size = int(sys.argv[5])
-    res = {} 
     p = sys.argv[2]
-    res[int(sys.argv[1])] = test_leave_one_out(int(sys.argv[1]), p)
-    open('%sres%d_%d_%s_%s.pkl'%(p, int(sys.argv[1]), args.seed, args.lr, args.batch_size), 'wb').write(pickle.dumps(res))
+    results, score_dict = test(p, int(sys.argv[1]))
     # Save or process the results as needed
+    print(results)
