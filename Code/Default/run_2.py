@@ -123,7 +123,7 @@ def test(t=5, p='Math'):
             
             score_dict = {}
             score2 = []
-            for idx in range(len(pred)):
+            for k in range(len(pred)):
                 datat = data[test_set.ids[idx]]
                 maxn = 1e9
                 lst = pred[idx].tolist()[:resmask.sum(dim=-1)[idx].item()]
