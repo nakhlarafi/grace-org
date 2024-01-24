@@ -21,8 +21,8 @@ def print_gpu_memory_usage():
     while True:
         GPUs = GPUtil.getGPUs()
         for gpu in GPUs:
-            print('-'*20)
-            print(f"GPU {gpu.id}: {gpu.memoryUsed}MB / {gpu.memoryTotal}MB")
+            # print('-'*20)
+            # print(f"GPU {gpu.id}: {gpu.memoryUsed}MB / {gpu.memoryTotal}MB")
         time.sleep(5)  # Print every 5 seconds
 
 threading.Thread(target=print_gpu_memory_usage, daemon=True).start()
@@ -52,7 +52,7 @@ for i in tqdm(range(int(len(lst) / totalnum) + 1)):
         jobs.append(p)
         ######
         memory_after = get_gpu_memory()
-        print(f"Memory used by job {j}: {memory_after - memory_before} MiB")
+        # print(f"Memory used by job {j}: {memory_after - memory_before} MiB")
 
         time.sleep(10)
     for p in jobs:
