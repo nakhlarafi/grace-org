@@ -126,7 +126,6 @@ def test(t=5, p='Math', model_dir="checkpointcodeSearch"):
                     maxn = min(maxn, i)
                 score2.append(maxn)
 
-            print(score_dict)
             cumulative_test_time += time.time() - test_start_time
             each_epoch_pred[k] = lst
             each_epoch_pred[str(k) + '_pred'] = score_dict
@@ -134,6 +133,7 @@ def test(t=5, p='Math', model_dir="checkpointcodeSearch"):
             if score2[0] == 0:
                 batchn.append(k)
             bans.append(lst)
+            print(each_epoch_pred)
 
     print(f"Total Testing Time: {cumulative_test_time}")
 
