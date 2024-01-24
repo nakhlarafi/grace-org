@@ -109,8 +109,8 @@ def test(t=5, p='Math'):
     for k, testBatch in tqdm(enumerate(test_set.Get_Train(len(test_set)))):
         test_start_time = time.time()
         testBatch = [gVar(x) for x in testBatch]
-        print('edikeo vitre aisi')
         print('-'*20)
+        print('edikeo vitre aisi')
         print(k)
         with torch.no_grad():
             # print('edikeo vitre vitre aisi')
@@ -123,12 +123,12 @@ def test(t=5, p='Math'):
             
             score_dict = {}
             score2 = []
-            for k in range(len(pred)):
-                datat = data[test_set.ids[k]]
+            for idx in range(len(pred)):
+                datat = data[test_set.ids[idx]]
                 maxn = 1e9
-                lst = pred[k].tolist()[:resmask.sum(dim=-1)[k].item()]
+                lst = pred[idx].tolist()[:resmask.sum(dim=-1)[idx].item()]
                 for pos in lst:
-                    score_dict[pos] = s[k, pos].item()
+                    score_dict[pos] = s[idx, pos].item()
                 for x in datat['ans']:
                     i = lst.index(x)
                     maxn = min(maxn, i)
