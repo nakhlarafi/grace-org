@@ -107,6 +107,7 @@ def test(t=5, p='Math'):
     # print(test_set)
     # Testing loop
     # for k, testBatch in tqdm(enumerate(test_set.Get_Train(len(test_set)))):
+    print(test_set.Get_Train(len(test_set)))
     for k in tqdm(range(len(test_set))): 
         testItem = test_set[k]  # Accessing individual item
         testBatch = [gVar(x) for x in testItem]
