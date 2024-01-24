@@ -152,6 +152,17 @@ if __name__ == "__main__":
     # print(int(sys.argv[1]))
     result = test(int(sys.argv[1]), p)
     # print(res)
-    with open(f'{p}res_{result[0]}.pkl', 'wb') as file:
+    
+    # Assuming 'p' and 'result' are defined earlier in your code
+    file_path = f'{p}res_{result[0]}.pkl'
+
+    # Check if the file exists
+    if os.path.exists(file_path):
+        # Delete the existing file
+        os.remove(file_path)
+
+    # Now, create a new file and write the data
+    with open(file_path, 'wb') as file:
         pickle.dump(result, file)
+    
   
