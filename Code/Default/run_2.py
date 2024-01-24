@@ -109,7 +109,7 @@ def test(t=5, p='Math'):
     for k in tqdm(range(len(test_set))):
         test_start_time = time.time()
         testBatch = test_set[k]  
-        testBatch = [gVar(x) for x in testItem]  
+        testBatch = [gVar(x) for x in testBatch]  
         print('-'*20)
         print('edikeo vitre aisi')
         print(k)
