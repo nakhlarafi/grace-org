@@ -153,8 +153,14 @@ if __name__ == "__main__":
     result = test(int(sys.argv[1]), p)
     # print(res)
     
-    # Assuming 'p' and 'result' are defined earlier in your code
-    file_path = f'crossvalidation/{p}/{p}res_{result[0]}.pkl'
+    # Construct the file path
+    directory = f'crossvalidation/{p}'
+    file_name = f'{p}res_{result[0]}.pkl'
+    file_path = os.path.join(directory, file_name)
+
+    # Check if the directory exists, if not, create it
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
     # Check if the file exists
     if os.path.exists(file_path):
