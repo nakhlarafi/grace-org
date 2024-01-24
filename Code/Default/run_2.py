@@ -80,12 +80,10 @@ def test(t=5, p='Math'):
 
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
-    
-    print('edike dhuksi bhai')
-    # Load the testing data
-    test_set = SumDataset(args, "test", p, testid=t)
-    data = pickle.load(open(p + '.pkl', 'rb'))
 
+    # Load the testing data
+    test_set = SumDataset(args, "test_only", p, testid=t)
+    data = pickle.load(open(p + '.pkl', 'rb'))
     args.Code_Vocsize = len(test_set.Code_Voc)
     args.Nl_Vocsize = len(test_set.Nl_Voc)
     args.Vocsize = len(test_set.Char_Voc)
@@ -110,7 +108,6 @@ def test(t=5, p='Math'):
     for k, testBatch in tqdm(enumerate(test_set.Get_Train(args.batch_size))):
         test_start_time = time.time()
         testBatch = [gVar(x) for x in testBatch]
-        print("ami edike bhaia")
         with torch.no_grad():
             l, pre, _ = model(testBatch[0], testBatch[1], testBatch[2], testBatch[3], testBatch[4], testBatch[5], testBatch[6], testBatch[7])
             resmask = torch.eq(testBatch[0], 2)
@@ -131,7 +128,7 @@ def test(t=5, p='Math'):
                     i = lst.index(x)
                     maxn = min(maxn, i)
                 score2.append(maxn)
-            print(score_dict)
+
             test_end_time = time.time()
             cumulative_test_time += test_end_time - test_start_time
             each_epoch_pred[k] = lst

@@ -96,6 +96,10 @@ class SumDataset(data.Dataset):
                 for x in self.ids:
                     tmp.append(data[i][x])
                 self.data.append(tmp)
+        elif dataName == 'test_only':
+            # Use all data as test data
+            self.data = data
+            self.ids = list(range(len(data[0])))
         else:
             testnum = 1#int(0.1 * len(data[0]))
             ids = []
