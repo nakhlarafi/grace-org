@@ -110,6 +110,7 @@ def test(t=5, p='Math'):
     for k, testBatch in tqdm(enumerate(test_set.Get_Train(args.batch_size))):
         test_start_time = time.time()
         testBatch = [gVar(x) for x in testBatch]
+        print("ami edike bhaia")
         with torch.no_grad():
             l, pre, _ = model(testBatch[0], testBatch[1], testBatch[2], testBatch[3], testBatch[4], testBatch[5], testBatch[6], testBatch[7])
             resmask = torch.eq(testBatch[0], 2)
