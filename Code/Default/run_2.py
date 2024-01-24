@@ -152,6 +152,6 @@ if __name__ == "__main__":
     # print(int(sys.argv[1]))
     result = test(int(sys.argv[1]), p)
     # print(res)
-    with open(f'{p}res_{project_name_id}.pkl', 'wb') as file:
+    with open(f'{p}res_{result[0]}.pkl', 'wb') as file:
         pickle.dump(result, file)
   
