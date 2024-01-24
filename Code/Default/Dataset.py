@@ -102,7 +102,7 @@ class SumDataset(data.Dataset):
             all_data = pickle.load(open(self.proj + 'data.pkl', 'rb'))
             self.data = all_data
             # print(self.data)
-            pdb.set_trace()
+            # pdb.set_trace()
             # print(list(range(len(data[0]))))
             # pdb.set_trace()
             self.ids = list(range(len(data[0])))
