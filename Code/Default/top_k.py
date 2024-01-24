@@ -1,6 +1,8 @@
 import json
 import numpy as np
+import sys
 
+project_name = sys.argv[1]
 def calculate_metrics(json_file):
     with open(json_file, 'r') as file:
         data = json.load(file)
