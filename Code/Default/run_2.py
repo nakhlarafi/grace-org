@@ -117,7 +117,9 @@ def test(t=5, p='Math'):
             s = s.masked_fill(resmask == 0, 1e9)
             pred = s.argsort(dim=-1)
             pred = pred.data.cpu().numpy()
-
+            print('-'*20)
+            print(pred)
+            
             score_dict = {}
             score2 = []
             for idx in range(len(pred)):
@@ -153,6 +155,6 @@ if __name__ == "__main__":
     p = sys.argv[2]
     res = {}
     res[int(sys.argv[1])] = test(int(sys.argv[1]), p)
-    print(res)
+    # print(res)
     open('%sres%d_%d_%s_%s.pkl'%(p, int(sys.argv[1]), args.seed, args.lr, args.batch_size), 'wb').write(pickle.dumps(res))
   
