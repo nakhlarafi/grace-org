@@ -122,4 +122,4 @@ if __name__ == "__main__":
     p = sys.argv[2]
     results, score_dict = test(p, int(sys.argv[1]))
     # Save or process the results as needed
-    print(results)
+    print("result hoilo gia",results, score_dict)
