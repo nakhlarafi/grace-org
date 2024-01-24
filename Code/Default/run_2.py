@@ -110,6 +110,7 @@ def test(t=5, p='Math'):
         test_start_time = time.time()
         testBatch = [gVar(x) for x in testBatch]
         print('edikeo vitre aisi')
+        print('-'*50)
         print(testBatch)
         with torch.no_grad():
             print('edikeo vitre vitre aisi')
