@@ -114,14 +114,23 @@ def test(p='Math', t=5):
 
 
 
+# if __name__ == "__main__":
+#     args.lr = float(sys.argv[3])
+#     args.seed = int(sys.argv[4])
+#     args.batch_size = int(sys.argv[5])
+#     np.set_printoptions(threshold=sys.maxsize)
+#     res = {}    
+#     p = sys.argv[2]
+#     res[int(sys.argv[1])] = train(int(sys.argv[1]), p)
+#     open('%sres%d_%d_%s_%s.pkl'%(p, int(sys.argv[1]), args.seed, args.lr, args.batch_size), 'wb').write(pickle.dumps(res))
+
+# Main execution
 if __name__ == "__main__":
     args.lr = float(sys.argv[3])
     args.seed = int(sys.argv[4])
     args.batch_size = int(sys.argv[5])
-    np.set_printoptions(threshold=sys.maxsize)
-    res = {}    
     p = sys.argv[2]
-    res[int(sys.argv[1])] = train(int(sys.argv[1]), p)
-    open('%sres%d_%d_%s_%s.pkl'%(p, int(sys.argv[1]), args.seed, args.lr, args.batch_size), 'wb').write(pickle.dumps(res))
+    results, score_dict = test(p, int(sys.argv[1]))
+    # Save or process the results as needed
 
 
