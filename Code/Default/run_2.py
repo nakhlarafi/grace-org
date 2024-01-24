@@ -151,5 +151,6 @@ if __name__ == "__main__":
     args.seed = int(sys.argv[4])
     args.batch_size = int(sys.argv[5])
     p = sys.argv[2]
-    results, bans, batchn, each_epoch_pred = test_leave_one_out(int(sys.argv[1]), p)
+    res[int(sys.argv[1])] = test_leave_one_out(int(sys.argv[1]), p)
+    open('%sres%d_%d_%s_%s.pkl'%(p, int(sys.argv[1]), args.seed, args.lr, args.batch_size), 'wb').write(pickle.dumps(res))
     # Save or process the results as needed
