@@ -106,7 +106,7 @@ def test(t=5, p='Math'):
     # print('edike aisi bhai')
     # print(test_set)
     # Testing loop
-    for k, testBatch in tqdm(enumerate(test_set.Get_Train(len(test_set)))):
+    for k, testBatch in tqdm(enumerate(test_set)):
         test_start_time = time.time()
         testBatch = [gVar(x) for x in testBatch]
         print('-'*20)
@@ -144,7 +144,6 @@ def test(t=5, p='Math'):
             if score2[0] == 0:
                 batchn.append(k)
             bans.append(lst)
-        k = k+1
     # Print total testing time
     print(f"Total Testing Time: {cumulative_test_time}")
 
