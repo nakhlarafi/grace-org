@@ -91,8 +91,8 @@ def train(t = 5, p='Math'):
     args.Vocsize = len(train_set.Char_Voc)
 
     # print(dev_set.ids)
-    model = NlEncoder(args)
-    load_model(model)
+    model = load_model(model)
+    # load_model(model)
     if use_cuda:
         print('using GPU')
         model = model.cuda()
