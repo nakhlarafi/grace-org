@@ -106,9 +106,10 @@ def test(t=5, p='Math'):
     # print('edike aisi bhai')
     # print(test_set)
     # Testing loop
-    for k, testBatch in tqdm(enumerate(test_set)):
+    for k, testBatch in tqdm(enumerate(test_set.Get_Train(len(test_set)))):
         test_start_time = time.time()
-        testBatch = [gVar(x) for x in testBatch]
+        for i in range(len(testBatch)):
+            testBatch[i] = gVar(testBatch[i])
         print('-'*20)
         print('edikeo vitre aisi')
         print(k)
