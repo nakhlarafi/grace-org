@@ -150,7 +150,7 @@ if __name__ == "__main__":
     res = {}
     # print('-'*50)
     # print(int(sys.argv[1]))
-    project_name_id, result = test(int(sys.argv[1]), p)
+    result = test(int(sys.argv[1]), p)
     # print(res)
-    open(f'{p}res_{project_name_id}.pkl')
+    open(f'{p}res_{project_name_id}.pkl', 'wb').write(pickle.dumps(result))
   
