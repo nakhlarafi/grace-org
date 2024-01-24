@@ -153,3 +153,4 @@ if __name__ == "__main__":
     p = sys.argv[2]
     results, bans, batchn, each_epoch_pred = test(int(sys.argv[1]), p)
     # Process the results as needed
+    print(results)
