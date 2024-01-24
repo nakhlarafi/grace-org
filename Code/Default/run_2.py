@@ -117,8 +117,6 @@ def test(t=5, p='Math'):
             s = s.masked_fill(resmask == 0, 1e9)
             pred = s.argsort(dim=-1)
             pred = pred.data.cpu().numpy()
-            print('-'*20)
-            print(pred)
             
             score_dict = {}
             score2 = []
@@ -133,6 +131,8 @@ def test(t=5, p='Math'):
                     maxn = min(maxn, i)
                 score2.append(maxn)
 
+            print('-'*20)
+            print(score_dict)
             test_end_time = time.time()
             cumulative_test_time += test_end_time - test_start_time
             each_epoch_pred[k] = lst
