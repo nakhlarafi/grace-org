@@ -79,10 +79,14 @@ def train(t=5, p='Math'):
     torch.cuda.manual_seed_all(args.seed) 
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
-
+    
     # Load datasets
     dev_set = SumDataset(args, "test", p, testid=t)
     data = pickle.load(open(p + '.pkl', 'rb'))
+
+    args.Code_Vocsize = len(dev_set.Code_Voc)
+    args.Nl_Vocsize = len(dev_set.Nl_Voc)
+    args.Vocsize = len(dev_set.Char_Voc)
 
     # Initialize and load the pre-trained model
     model = NlEncoder(args)
