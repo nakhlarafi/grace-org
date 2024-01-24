@@ -84,6 +84,11 @@ def test_leave_one_out(t=5, p='Math'):
     test_set = SumDataset(args, "test", p, testid=t)
     data = pickle.load(open(p + '.pkl', 'rb'))
 
+    args.Code_Vocsize = len(test_set.Code_Voc)
+    args.Nl_Vocsize = len(test_set.Nl_Voc)
+    args.Vocsize = len(test_set.Char_Voc)
+
+
     # Initialize and load the model from the checkpoint
     model = NlEncoder(args)
     load_model(model, dirs="checkpointcodeSearch")
