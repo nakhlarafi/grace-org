@@ -100,6 +100,8 @@ class SumDataset(data.Dataset):
         elif dataName == 'test_only':
             # Use all data as test data
             self.data = self.preProcessData(open(proj + ".pkl", 'rb'))
+            print(self.data)
+            pdb.set_trace()
             # print(list(range(len(data[0]))))
             # pdb.set_trace()
             self.ids = list(range(len(data[0])))
