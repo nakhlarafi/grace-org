@@ -3,4 +3,5 @@ import sys
 file = sys.argv[1]
 with open(file, 'rb') as f:
     data = pickle.load(f)
-    print(data)
+    for d in data:
+        print(d['proj'])
