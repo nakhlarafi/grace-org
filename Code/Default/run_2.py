@@ -117,7 +117,7 @@ def test(t=5, p='Math', model_dir="checkpointcodeSearch"):
             score2 = []
             for idx in range(len(pred)):
                 datat = data[test_set.ids[idx]]
-                print(datat)
+                print(datat['proj'])
                 maxn = 1e9
                 lst = pred[idx].tolist()[:resmask.sum(dim=-1)[idx].item()]
                 for pos in lst:
