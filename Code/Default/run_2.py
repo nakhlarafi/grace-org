@@ -70,143 +70,86 @@ def gVar(data):
         tensor = tensor.cuda()
     return tensor
 
-def train(t = 5, p='Math'):
-
+def test(t=5, p='Math'):
+    # Set up the environment and seeds
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)  
     random.seed(args.seed + t)
     torch.cuda.manual_seed(args.seed)
-    torch.cuda.manual_seed_all(args.seed) 
+    torch.cuda.manual_seed_all(args.seed)
 
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
-    dev_set = SumDataset(args, "test", p, testid=t)
-    val_set = SumDataset(args, "val", p, testid=t)
-    data = pickle.load(open(p + '.pkl', 'rb'))
-    dev_data = pickle.load(open(p + '.pkl', 'rb'))
-    train_set = SumDataset(args, "train", testid=t, proj=p, lst=dev_set.ids + val_set.ids)
-    numt = len(train_set.data[0])
-    args.Code_Vocsize = len(train_set.Code_Voc)
-    args.Nl_Vocsize = len(train_set.Nl_Voc)
-    args.Vocsize = len(train_set.Char_Voc)
-
-    # print(dev_set.ids)
-    model = NlEncoder(args)
-    load_model(model)
-    if use_cuda:
-        print('using GPU')
-        model = model.cuda()
     
-    maxl = 1e9
-    optimizer = ScheduledOptim(optim.Adam(model.parameters(), lr=args.lr), args.embedding_size, 4000)
-    maxAcc = 0
-    minloss = 1e9
-    rdic = {}
+
+    # Load the testing data
+    test_set = SumDataset(args, "test", p, testid=t)
+    data = pickle.load(open(p + '.pkl', 'rb'))
+
+    args.Code_Vocsize = len(test_set.Code_Voc)
+    args.Nl_Vocsize = len(test_set.Nl_Voc)
+    args.Vocsize = len(test_set.Char_Voc)
+
+    # Initialize and load the pre-trained model
+    model = NlEncoder(args)
+    load_model(model, dirs="checkpointcodeSearch")
+    if use_cuda:
+        model = model.cuda()
+
+    # Set the model to evaluation mode
+    model.eval()
+
+    # Variables to store results
     brest = []
     bans = []
     batchn = []
     each_epoch_pred = {}
-    for x in dev_set.Nl_Voc:
-      rdic[dev_set.Nl_Voc[x]] = x
-    
-    # Training time starts here
-    train_start_time = time.time()
-    cumulative_test_time = 0  # To hold the cumulative testing time across all epochs
-    
-    for epoch in range(10):
-        index = 0
-        for dBatch in tqdm(train_set.Get_Train(args.batch_size)):
-            if index == 0:
-                accs = []
-                loss = []
-                model = model.eval()
-                
-                # Testing time starts here
-                test_start_time = time.time()
-                score2 = []
-                for k, devBatch in tqdm(enumerate(val_set.Get_Train(len(val_set)))):
-                        for i in range(len(devBatch)):
-                            devBatch[i] = gVar(devBatch[i])
-                        with torch.no_grad():
-                            l, pre, _ = model(devBatch[0], devBatch[1], devBatch[2], devBatch[3], devBatch[4], devBatch[5], devBatch[6], devBatch[7])
-                            resmask = torch.eq(devBatch[0], 2)
-                            s = -pre#-pre[:, :, 1]
-                            s = s.masked_fill(resmask == 0, 1e9)
-                            pred = s.argsort(dim=-1)
-                            pred = pred.data.cpu().numpy()
-                            alst = []
-                            score_dict = {}
+    cumulative_test_time = 0
 
-                            for k in range(len(pred)): 
-                                datat = data[val_set.ids[k]]
-                                maxn = 1e9
-                                lst = pred[k].tolist()[:resmask.sum(dim=-1)[k].item()]#score = np.sum(loss) / numt
-                                for pos in lst:
-                                    score_dict[pos] = s[k, pos].item()
-                                #bans = lst
-                                for x in datat['ans']:
-                                    i = lst.index(x)
-                                    maxn = min(maxn, i)
-                                score2.append(maxn)
+    # Testing loop
+    for k, testBatch in tqdm(enumerate(test_set.Get_Train(args.batch_size))):
+        test_start_time = time.time()
+        testBatch = [gVar(x) for x in testBatch]
+        with torch.no_grad():
+            l, pre, _ = model(testBatch[0], testBatch[1], testBatch[2], testBatch[3], testBatch[4], testBatch[5], testBatch[6], testBatch[7])
+            resmask = torch.eq(testBatch[0], 2)
+            s = -pre
+            s = s.masked_fill(resmask == 0, 1e9)
+            pred = s.argsort(dim=-1)
+            pred = pred.data.cpu().numpy()
 
-                test_end_time = time.time()  # Testing time ends here
-                total_test_time = test_end_time - test_start_time
-                cumulative_test_time += total_test_time
-                each_epoch_pred[epoch] = lst
-                each_epoch_pred[str(epoch)+'_pred'] = score_dict
-                score = score2[0]
-                print('curr accuracy is ' + str(score) + "," + str(score2))
-                
-                # Calculate and display the memory usage of the model parameters
-                num_params = sum(p.numel() for p in model.parameters())
-                memory_in_bytes = num_params * 4  # 4 bytes for a 32-bit float
-                # print('-'*20)
-                # print(f"Approximate model memory: {memory_in_bytes / (1024 * 1024):.2f} MB")
+            score_dict = {}
+            score2 = []
+            for idx in range(len(pred)):
+                datat = data[test_set.ids[idx]]
+                maxn = 1e9
+                lst = pred[idx].tolist()[:resmask.sum(dim=-1)[idx].item()]
+                for pos in lst:
+                    score_dict[pos] = s[idx, pos].item()
+                for x in datat['ans']:
+                    i = lst.index(x)
+                    maxn = min(maxn, i)
+                score2.append(maxn)
 
-                if score2[0] == 0:
-                    batchn.append(epoch)
-                    
+            test_end_time = time.time()
+            cumulative_test_time += test_end_time - test_start_time
+            each_epoch_pred[k] = lst
+            each_epoch_pred[str(k) + '_pred'] = score_dict
+            brest.append(score2)
+            if score2[0] == 0:
+                batchn.append(k)
+            bans.append(lst)
 
-                if  maxl >= score:
-                    brest = score2
-                    bans = lst
-                    maxl = score
-                    # print("find better score " + str(score) + "," + str(score2))
-                    # save_model(model)
-                    # torch.save(model.state_dict(), os.path.join(wandb.run.dir, 'model.pt'))
-                # model = model.train()
-            # for i in range(len(dBatch)):
-            #     dBatch[i] = gVar(dBatch[i])
-            # loss, _, _ = model(dBatch[0], dBatch[1], dBatch[2], dBatch[3], dBatch[4], dBatch[5], dBatch[6], dBatch[7])
-            # print(loss.mean().item())
-            # optimizer.zero_grad()
-            # loss = loss.mean()
-            # loss.backward()
-            # if use_cuda:
-            #     current_memory_allocated = torch.cuda.memory_allocated()
-            #     memory_difference = (current_memory_allocated - initial_memory_allocated) / (1024 ** 2)  # Convert bytes to MB
-            #     print(f"GPU Memory Used: {memory_difference:.2f} MB")
-
-            # optimizer.step_and_update_lr()
-            index += 1
-    train_end_time = time.time()  # Training time ends here
-    total_train_time = train_end_time - train_start_time
-    # print(f"TIMING_INFO: Training Time: {total_train_time}, Testing Time: {cumulative_test_time}")
-    with open(f'{p}_timing_data.txt', 'a') as f:  # 'a' mode is for appending to the file
-        f.write(f"TIMING_INFO: Training Time: {total_train_time}, Testing Time: {cumulative_test_time}\n")
+    # Print total testing time
+    print(f"Total Testing Time: {cumulative_test_time}")
 
     return brest, bans, batchn, each_epoch_pred
 
-
-
+# Main execution
 if __name__ == "__main__":
     args.lr = float(sys.argv[3])
     args.seed = int(sys.argv[4])
     args.batch_size = int(sys.argv[5])
-    np.set_printoptions(threshold=sys.maxsize)
-    res = {}    
     p = sys.argv[2]
-    res[int(sys.argv[1])] = train(int(sys.argv[1]), p)
-    open('%sres%d_%d_%s_%s.pkl'%(p, int(sys.argv[1]), args.seed, args.lr, args.batch_size), 'wb').write(pickle.dumps(res))
-
-
+    results, bans, batchn, each_epoch_pred = test(int(sys.argv[1]), p)
+    # Process the results as needed
