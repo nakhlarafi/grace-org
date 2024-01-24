@@ -110,8 +110,6 @@ def test(t=5, p='Math'):
         test_start_time = time.time()
         testBatch = [gVar(x) for x in testBatch]
         print('edikeo vitre aisi')
-        print('-'*50)
-        print(testBatch)
         with torch.no_grad():
             print('edikeo vitre vitre aisi')
             l, pre, _ = model(testBatch[0], testBatch[1], testBatch[2], testBatch[3], testBatch[4], testBatch[5], testBatch[6], testBatch[7])
@@ -157,6 +155,8 @@ if __name__ == "__main__":
     args.batch_size = int(sys.argv[5])
     p = sys.argv[2]
     res = {}
+    print('-'*50)
+    print(int(sys.argv[1]))
     res[int(sys.argv[1])] = test(int(sys.argv[1]), p)
     # print(res)
     open('%sres%d_%d_%s_%s.pkl'%(p, int(sys.argv[1]), args.seed, args.lr, args.batch_size), 'wb').write(pickle.dumps(res))
