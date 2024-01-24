@@ -99,7 +99,7 @@ class SumDataset(data.Dataset):
                 self.data.append(tmp)
         elif dataName == 'test_only':
             self.ids = list(range(len(data[0])))
-            print(len(data))
+            print('data size is',len(data))
             for i in range(len(data)):
                 tmp = []
                 for x in self.ids:
