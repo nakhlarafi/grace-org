@@ -106,12 +106,10 @@ def test(t=5, p='Math'):
     # print('edike aisi bhai')
     # print(test_set)
     # Testing loop
-    for k, testBatch in tqdm(enumerate(test_set.Get_Train(len(test_set)))):
-        test_start_time = time.time()
-        testBatch = [gVar(x) for x in testBatch]
-        print('-'*20)
-        print('edikeo vitre aisi')
-        print(k)
+    # for k, testBatch in tqdm(enumerate(test_set.Get_Train(len(test_set)))):
+    for k in tqdm(range(len(test_set))): 
+        testItem = test_set[k]  # Accessing individual item
+        testBatch = [gVar(x) for x in testItem]
         with torch.no_grad():
             # print('edikeo vitre vitre aisi')
             l, pre, _ = model(testBatch[0], testBatch[1], testBatch[2], testBatch[3], testBatch[4], testBatch[5], testBatch[6], testBatch[7])
