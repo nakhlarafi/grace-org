@@ -81,7 +81,7 @@ def test(t=5, p='Math'):
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
     
-
+    print('edike dhuksi bhai')
     # Load the testing data
     test_set = SumDataset(args, "test", p, testid=t)
     data = pickle.load(open(p + '.pkl', 'rb'))

@@ -21,8 +21,8 @@ def print_gpu_memory_usage():
     while True:
         GPUs = GPUtil.getGPUs()
         for gpu in GPUs:
-            # print('-'*20)
-            # print(f"GPU {gpu.id}: {gpu.memoryUsed}MB / {gpu.memoryTotal}MB")
+            print('-'*20)
+            print(f"GPU {gpu.id}: {gpu.memoryUsed}MB / {gpu.memoryTotal}MB")
         time.sleep(5)  # Print every 5 seconds
 
 threading.Thread(target=print_gpu_memory_usage, daemon=True).start()
