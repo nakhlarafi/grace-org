@@ -99,7 +99,8 @@ class SumDataset(data.Dataset):
                 self.data.append(tmp)
         elif dataName == 'test_only':
             # Use all data as test data
-            self.data = self.preProcessData(open(proj + ".pkl", 'rb'))
+            all_data = pickle.load(open(self.proj + 'data.pkl', 'rb'))
+            self.data = all_data
             print(self.data)
             pdb.set_trace()
             # print(list(range(len(data[0]))))
