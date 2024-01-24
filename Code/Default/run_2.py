@@ -153,5 +153,6 @@ if __name__ == "__main__":
     p = sys.argv[2]
     res = {}
     res[int(sys.argv[1])] = test(int(sys.argv[1]), p)
+    print(res)
     open('%sres%d_%d_%s_%s.pkl'%(p, int(sys.argv[1]), args.seed, args.lr, args.batch_size), 'wb').write(pickle.dumps(res))
   
