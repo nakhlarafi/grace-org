@@ -156,4 +156,4 @@ if __name__ == "__main__":
     print(results)
     print(bans)
     print(batchn)
-    print(epoch_pred)
+    print(each_epoch_pred)
