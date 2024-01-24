@@ -70,57 +70,49 @@ def gVar(data):
         tensor = tensor.cuda()
     return tensor
 
-def test(t=5, p='Math'):
-    # Set up the environment and seeds
+def test(t=5, p='Math', model_dir="checkpointcodeSearch"):
+    # Set up environment
     torch.manual_seed(args.seed)
-    np.random.seed(args.seed)  
+    np.random.seed(args.seed)
     random.seed(args.seed + t)
     torch.cuda.manual_seed(args.seed)
     torch.cuda.manual_seed_all(args.seed)
-
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
 
-    # Load the testing data
-    test_set = SumDataset(args, "train", p, testid=t)
+    # Load test dataset
+    test_set = SumDataset(args, "test", p, testid=t)
     data = pickle.load(open(p + '.pkl', 'rb'))
     args.Code_Vocsize = len(test_set.Code_Voc)
     args.Nl_Vocsize = len(test_set.Nl_Voc)
     args.Vocsize = len(test_set.Char_Voc)
 
-    # Initialize and load the pre-trained model
+    # Initialize model and load weights
     model = NlEncoder(args)
-    load_model(model, dirs="checkpointcodeSearch")
+    model.load_state_dict(torch.load(model_dir + '/best_model.ckpt'))
     if use_cuda:
         model = model.cuda()
-
-    # Set the model to evaluation mode
     model.eval()
 
-    # Variables to store results
+    # Testing loop
     brest = []
     bans = []
     batchn = []
     each_epoch_pred = {}
     cumulative_test_time = 0
-    # print('edike aisi bhai')
-    # print(test_set)
-    # Testing loop
+
     for k, testBatch in tqdm(enumerate(test_set.Get_Train(len(test_set)))):
         test_start_time = time.time()
         testBatch = [gVar(x) for x in testBatch]
-        print('-'*20)
-        print('edikeo vitre aisi')
-        print(k)
+
         with torch.no_grad():
-            # print('edikeo vitre vitre aisi')
-            l, pre, _ = model(testBatch[0], testBatch[1], testBatch[2], testBatch[3], testBatch[4], testBatch[5], testBatch[6], testBatch[7])
+            l, pre, _ = model(*testBatch)
             resmask = torch.eq(testBatch[0], 2)
             s = -pre
             s = s.masked_fill(resmask == 0, 1e9)
             pred = s.argsort(dim=-1)
             pred = pred.data.cpu().numpy()
-            
+
             score_dict = {}
             score2 = []
             for idx in range(len(pred)):
@@ -134,17 +126,14 @@ def test(t=5, p='Math'):
                     maxn = min(maxn, i)
                 score2.append(maxn)
 
-            print('-'*20)
-            print(score_dict)
-            test_end_time = time.time()
-            cumulative_test_time += test_end_time - test_start_time
+            cumulative_test_time += time.time() - test_start_time
             each_epoch_pred[k] = lst
             each_epoch_pred[str(k) + '_pred'] = score_dict
             brest.append(score2)
             if score2[0] == 0:
                 batchn.append(k)
             bans.append(lst)
-    # Print total testing time
+
     print(f"Total Testing Time: {cumulative_test_time}")
 
     return brest, bans, batchn, each_epoch_pred
