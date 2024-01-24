@@ -104,12 +104,13 @@ def test(t=5, p='Math'):
     each_epoch_pred = {}
     cumulative_test_time = 0
     print('edike aisi bhai')
-    print(test_set)
+    # print(test_set)
     # Testing loop
     for k, testBatch in tqdm(enumerate(test_set.Get_Train(args.batch_size))):
         test_start_time = time.time()
         testBatch = [gVar(x) for x in testBatch]
         print('edikeo vitre aisi')
+        print(testBatch)
         with torch.no_grad():
             print('edikeo vitre vitre aisi')
             l, pre, _ = model(testBatch[0], testBatch[1], testBatch[2], testBatch[3], testBatch[4], testBatch[5], testBatch[6], testBatch[7])
