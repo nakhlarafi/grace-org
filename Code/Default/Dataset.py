@@ -99,12 +99,13 @@ class SumDataset(data.Dataset):
                 self.data.append(tmp)
         elif dataName == 'test_only':
             self.ids = list(range(len(data[0])))
-            print('data size is',data[0])
-            for i in range(len(data)):
-                tmp = []
-                for x in self.ids:
-                    tmp.append(data[i][x])
-                self.data.append(tmp)
+            # print('data size is',data[0])
+            # for i in range(len(data)):
+            #     tmp = []
+            #     for x in self.ids:
+            #         tmp.append(data[i][x])
+            #     self.data.append(tmp)
+            self.data = data
         else:
             testnum = 1#int(0.1 * len(data[0]))
             ids = []
