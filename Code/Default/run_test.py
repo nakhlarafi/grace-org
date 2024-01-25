@@ -33,3 +33,6 @@ for i in tqdm(range(int(len(lst) / totalnum) + 1)):
         time.sleep(10)
     for p in jobs:
         p.wait()
+p = subprocess.Popen("python3 merge_results.py %s"%(project), shell=True)
+p.wait()
+subprocess.Popen("python3 top_k.py %s"%(project),shell=True)            
