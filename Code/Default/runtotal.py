@@ -80,5 +80,5 @@ with open(f'{pp}_timing_data.txt', 'r') as f:
 total_training_time = sum(training_times)
 total_testing_time = sum(testing_times)
 
-print(f"The overall training time is {total_training_time} seconds.")
-print(f"The overall testing time is {total_testing_time} seconds.")
+# print(f"The overall training time is {total_training_time} seconds.")
+# print(f"The overall testing time is {total_testing_time} seconds.")
