@@ -7,4 +7,5 @@
 
 source /etc/profile.d/modules.sh 
 module load anaconda/3.2022.10
-python3 runtotal.py JacksonXml
+python runtotal.py Collections
+# python runtotal.py JacksonXml
