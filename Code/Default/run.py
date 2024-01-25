@@ -46,10 +46,10 @@ args = dotdict({
 os.environ['PYTHONHASHSEED'] = str(args.seed)
 
 def save_model(model, p, dirs = "checkpointcodeSearch"):
-    dirs = f'{p}/{dirs}'
+    dirs = f'{dirs}/{p}'
     if not os.path.exists(dirs):
         os.makedirs(dirs)
-    torch.save(model.state_dict(), dirs + 'best_model.ckpt')
+    torch.save(model.state_dict(), dirs + '/best_model.ckpt')
 
 
 def load_model(model, dirs="checkpointcodeSearch"):
