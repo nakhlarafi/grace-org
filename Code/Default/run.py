@@ -45,7 +45,7 @@ args = dotdict({
 })
 os.environ['PYTHONHASHSEED'] = str(args.seed)
 
-def save_model(model, dirs = "checkpointcodeSearch"):
+def save_model(model, dirs = f"checkpointcodeSearch/{p}"):
     if not os.path.exists(dirs):
         os.makedirs(dirs)
     torch.save(model.state_dict(), dirs + '/best_model.ckpt')
