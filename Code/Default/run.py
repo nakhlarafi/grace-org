@@ -45,10 +45,10 @@ args = dotdict({
 })
 os.environ['PYTHONHASHSEED'] = str(args.seed)
 
-def save_model(model, dirs = f"checkpointcodeSearch/{p}"):
+def save_model(model, p, dirs = "checkpointcodeSearch"):
     if not os.path.exists(dirs):
         os.makedirs(dirs)
-    torch.save(model.state_dict(), dirs + '/best_model.ckpt')
+    torch.save(model.state_dict(), dirs + f'{p}/best_model.ckpt')
 
 
 def load_model(model, dirs="checkpointcodeSearch"):
@@ -171,7 +171,7 @@ def train(t = 5, p='Math'):
                     bans = lst
                     maxl = score
                     # print("find better score " + str(score) + "," + str(score2))
-                    save_model(model)
+                    save_model(model,p)
                     # torch.save(model.state_dict(), os.path.join(wandb.run.dir, 'model.pt'))
                 model = model.train()
             for i in range(len(dBatch)):
