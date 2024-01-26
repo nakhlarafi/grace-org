@@ -5,4 +5,4 @@
 
 source /etc/profile.d/modules.sh
 module load anaconda/3.2023.03
-python runtotal.py Jsoup
+bash job5.sh
