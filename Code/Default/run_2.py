@@ -51,7 +51,7 @@ def save_model(model, dirs = "checkpointcodeSearch"):
     torch.save(model.state_dict(), dirs + '/best_model.ckpt')
 
 
-def load_model(model, dirs="checkpointcodeSearch"):
+def load_model(model, dirs="checkpointcodeSearch/Lang"):
     assert os.path.exists(dirs + '/best_model.ckpt'), 'Weights for saved model not found'
     model.load_state_dict(torch.load(dirs + '/best_model.ckpt'))
 
