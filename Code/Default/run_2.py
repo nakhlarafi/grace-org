@@ -165,7 +165,7 @@ if __name__ == "__main__":
     # print(res)
     
     # Construct the file path
-    directory = f'crossvalidation/{p}'
+    directory = f'crossvalidation/{p}/{trained_model}'
     file_name = f'{p}res_{result[0]}.pkl'
     file_path = os.path.join(directory, file_name)
 

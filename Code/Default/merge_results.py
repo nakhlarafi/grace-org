@@ -36,7 +36,8 @@ def read_and_merge_pkl_files(folder_path, output_json_file, additional_pkl_file,
 
 # Example usage
 project_name = sys.argv[1]
-folder_path = f'crossvalidation/{project_name}'  # Folder with .pkl files
+trained_model = sys.argv[2]
+folder_path = f'crossvalidation/{project_name}/{trained_model}'  # Folder with .pkl files
 additional_pkl_file = f'{project_name}.pkl'  # Path to the additional .pkl file
 output_json_file = f'crossvalidation/{project_name}/{project_name}_merged_data.json'
 read_and_merge_pkl_files(folder_path, output_json_file, additional_pkl_file, project_name)
