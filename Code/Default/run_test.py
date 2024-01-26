@@ -36,7 +36,7 @@ for i in tqdm(range(int(len(lst) / totalnum) + 1)):
         p.wait()
 p = subprocess.Popen("python3 merge_results.py %s %s"%(project, trained_model), shell=True)
 p.wait()
-p = subprocess.Popen("python3 top_k.py %s %s" % (project, trained_model), shell=True)
-# Wait for some time or until your condition is met
-p.terminate()  # or p.kill() for a more forceful approach
+# p = subprocess.Popen("python3 top_k.py %s %s" % (project, trained_model), shell=True)
+# # Wait for some time or until your condition is met
+# p.terminate()  # or p.kill() for a more forceful approach
           
