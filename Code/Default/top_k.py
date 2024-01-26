@@ -51,7 +51,7 @@ def calculate_metrics(json_file):
     }
 
 # Usage example
-json_file = f'crossvalidation/{project_name}/{project_name}_merged_data.json'
+json_file = f'crossvalidation/{project_name}/{model_name}/{project_name}_merged_data.json'
 metrics = calculate_metrics(json_file)
 
 # Output directory and file
