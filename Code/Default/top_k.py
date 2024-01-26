@@ -3,6 +3,7 @@ import numpy as np
 import sys
 
 project_name = sys.argv[1]
+model_name = sys.argv[2]
 
 def calculate_metrics(json_file):
     with open(json_file, 'r') as file:
@@ -51,4 +52,24 @@ def calculate_metrics(json_file):
 # Usage example
 json_file = f'crossvalidation/{project_name}/{project_name}_merged_data.json'
 metrics = calculate_metrics(json_file)
-print(metrics)
+
+# File to save results
+output_file = f'{model_name}_cross.json'
+
+# Check if the file already exists and load it
+if os.path.exists(output_file):
+    with open(output_file, 'r') as file:
+        existing_data = json.load(file)
+else:
+    existing_data = {}
+
+# Update the data with new metrics
+if model_name not in existing_data:
+    existing_data[model_name] = {}
+existing_data[model_name][project_name] = metrics
+
+# Write the updated data back to the file
+with open(output_file, 'w') as file:
+    json.dump(existing_data, file, indent=4)
+
+print(f"Metrics saved to {output_file}")

@@ -8,6 +8,7 @@ import GPUtil
 import psutil
 import threading
 project = sys.argv[1]
+trained_model = sys.argv[2]
 pp = project
 card = [0]
 
@@ -35,4 +36,4 @@ for i in tqdm(range(int(len(lst) / totalnum) + 1)):
         p.wait()
 p = subprocess.Popen("python3 merge_results.py %s"%(project), shell=True)
 p.wait()
-subprocess.Popen("python3 top_k.py %s"%(project),shell=True)            
+subprocess.Popen("python3 top_k.py %s %s"%(project, trained_model),shell=True)            
