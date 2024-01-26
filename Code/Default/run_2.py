@@ -51,7 +51,8 @@ def save_model(model, dirs = "checkpointcodeSearch"):
     torch.save(model.state_dict(), dirs + '/best_model.ckpt')
 
 
-def load_model(model, dirs="checkpointcodeSearch/Lang"):
+def load_model(model, dirs="checkpointcodeSearch"):
+    print(dirs)
     assert os.path.exists(dirs + '/best_model.ckpt'), 'Weights for saved model not found'
     model.load_state_dict(torch.load(dirs + '/best_model.ckpt'))
 
@@ -70,8 +71,9 @@ def gVar(data):
         tensor = tensor.cuda()
     return tensor
 
-def test(t=5, p='Math', model_dir="checkpointcodeSearch/Lang"):
+def test(t=5, p='Math', model_dir="checkpointcodeSearch/", trained_model=''):
     # Set up environment
+    model_dir = model_dir + trained_model
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
     random.seed(args.seed + t)
@@ -89,6 +91,7 @@ def test(t=5, p='Math', model_dir="checkpointcodeSearch/Lang"):
 
     # Initialize model and load weights
     model = NlEncoder(args)
+    print("model dir is", model_dir)
     model.load_state_dict(torch.load(model_dir + '/best_model.ckpt'))
     if use_cuda:
         model = model.cuda()
@@ -146,11 +149,12 @@ if __name__ == "__main__":
     args.lr = float(sys.argv[3])
     args.seed = int(sys.argv[4])
     args.batch_size = int(sys.argv[5])
+    trained_model = sys.argv[6]
     p = sys.argv[2]
     res = {}
     # print('-'*50)
     # print(int(sys.argv[1]))
-    result = test(int(sys.argv[1]), p)
+    result = test(int(sys.argv[1]), p, trained_model)
     # print(res)
     
     # Construct the file path

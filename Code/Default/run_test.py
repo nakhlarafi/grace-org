@@ -27,7 +27,7 @@ for i in tqdm(range(int(len(lst) / totalnum) + 1)):
         if totalnum * i + j >= len(lst):
             continue
         cardn =int(j / singlenum)
-        p = subprocess.Popen("CUDA_VISIBLE_DEVICES="+str(card[cardn]) + " python3 run_2.py %d %s %f %d %d"%(lst[totalnum * i + j], project, lr, seed, batch_size), shell=True)
+        p = subprocess.Popen("CUDA_VISIBLE_DEVICES="+str(card[cardn]) + " python3 run_2.py %d %s %f %d %d %s"%(lst[totalnum * i + j], project, lr, seed, batch_size, trained_model), shell=True)
         
         jobs.append(p)
     
