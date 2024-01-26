@@ -135,7 +135,7 @@ def test(t=5, p='Math', model_dir="checkpointcodeSearch/Lang"):
             if score2[0] == 0:
                 batchn.append(k)
             bans.append(lst)
-            print(each_epoch_pred)
+            print(project_name_id)
 
     print(f"Total Testing Time: {cumulative_test_time}")
 
