@@ -1,11 +1,11 @@
 #!/bin/bash
 
 
-python run_test.py Math Lang
-python run_test.py Compress Lang
-python run_test.py Gson Lang
-python run_test.py JacksonCore Lang
-python run_test.py JacksonXml Lang
-python run_test.py Jsoup Lang
-python run_test.py Mockito Lang
-python run_test.py Time Lang
+python top_k.py Math Lang
+python top_k.py Compress Lang
+python top_k.py Gson Lang
+python top_k.py JacksonCore Lang
+python top_k.py JacksonXml Lang
+python top_k.py Jsoup Lang
+python top_k.py Mockito Lang
+python top_k.py Time Lang
