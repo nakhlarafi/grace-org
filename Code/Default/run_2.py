@@ -71,9 +71,9 @@ def gVar(data):
         tensor = tensor.cuda()
     return tensor
 
-def test(t=5, p='Math', model_dir="checkpointcodeSearch/", trained_model=''):
+def test(t=5, p='Math', trained_model=''):
     # Set up environment
-    model_dir = model_dir + trained_model
+    model_dir = "checkpointcodeSearch/" + trained_model
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
     random.seed(args.seed + t)
