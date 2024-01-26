@@ -20,9 +20,10 @@ def calculate_metrics(json_file):
         min_rank, ranks = float('inf'), []
 
         for gt in ground_truth:
-            rank = ranking.index(gt)
-            ranks.append(rank)
-            min_rank = min(min_rank, rank)
+            if gt in ranking:
+                rank = ranking.index(gt)
+                ranks.append(rank)
+                min_rank = min(min_rank, rank)
 
         mfr_list.append(min_rank)
         mar_list.append(np.mean(ranks))
@@ -37,7 +38,6 @@ def calculate_metrics(json_file):
         if min_rank < 10:
             top10 += 1
 
-    num_projects = len(data)
     mfr_avg = np.mean(mfr_list)
     mar_avg = np.mean(mar_list)
 
@@ -54,8 +54,13 @@ def calculate_metrics(json_file):
 json_file = f'crossvalidation/{project_name}/{project_name}_merged_data.json'
 metrics = calculate_metrics(json_file)
 
-# File to save results
-output_file = f'dataleakage/{model_name}_cross.json'
+# Output directory and file
+output_dir = 'dataleakage'
+output_file = os.path.join(output_dir, f'{model_name}_cross.json')
+
+# Create the directory if it doesn't exist
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
 
 # Check if the file already exists and load it
 if os.path.exists(output_file):
