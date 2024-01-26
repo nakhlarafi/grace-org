@@ -54,7 +54,7 @@ json_file = f'crossvalidation/{project_name}/{project_name}_merged_data.json'
 metrics = calculate_metrics(json_file)
 
 # File to save results
-output_file = f'{model_name}_cross.json'
+output_file = f'dataleakage/{model_name}_cross.json'
 
 # Check if the file already exists and load it
 if os.path.exists(output_file):
