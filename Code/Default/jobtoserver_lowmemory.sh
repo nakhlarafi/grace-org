@@ -1,7 +1,6 @@
 #!/bin/bash
 #SBATCH -J grace_test_jack 
-#SBATCH --account=r_mdnakh 
-#SBATCH --nodelist=virya4
+#SBATCH -w virya3
 #SBATCH --mem=100M 
 #SBATCH -o _%x%J.txt
 
