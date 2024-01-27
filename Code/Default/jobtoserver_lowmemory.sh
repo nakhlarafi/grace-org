@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J depgraph-test
 #SBATCH --mem=120M
-#SBATCH -w virya2
+#SBATCH -w virya4
 #SBATCH -o depgraph-test.out
 #SBATCH --mail-type=BEGIN,END
 #SBATCH --mail-user=nakhla054@gmail.com 
