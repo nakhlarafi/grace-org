@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Array of MIDs
-MIDs=("Cli" "Codec" "Collections" "Compress" "Csv" "Gson" "JacksonCore" "JacksonXml" "Jsoup" "Math" "Mockito" "Time")
+MIDs=("Cli" "Codec" "Collections" "Compress" "Csv" "Gson" "JacksonCore" "JacksonXml" "Jsoup" "Math" "Mockito")
 
 # List of project names
 projects=("Cli" "Codec" "Collections" "Compress" "Csv" "Gson" "JacksonCore" "JacksonXml" "Jsoup" "Lang" "Math" "Mockito" "Time")
