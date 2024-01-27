@@ -1,6 +1,11 @@
 #!/bin/bash
-#SBATCH -J Depgrah --mem=100M --gpus=1 -w virya4
+#SBATCH -J grace_test_jack 
+#SBATCH --account=r_mdnakh 
+#SBATCH --nodelist=virya4
+#SBATCH --mem=100M 
+#SBATCH -o _%x%J.txt
 
-source /etc/profile.d/modules.sh
-module load anaconda/3.2023.03
-bash job5.sh
+source /etc/profile.d/modules.sh 
+module load anaconda/3.2022.10
+python runtotal.py Collections
+# python runtotal.py JacksonXml
