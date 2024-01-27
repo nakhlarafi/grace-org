@@ -1,6 +1,5 @@
 #!/bin/bash
 #SBATCH -J depgraph-test
-#SBATCH -n4
 #SBATCH --mem=120M
 #SBATCH -w virya3
 #SBATCH -o depgraph-test.out
