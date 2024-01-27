@@ -1,11 +1,6 @@
 #!/bin/bash
-#SBATCH -J grace_test_jack 
-#SBATCH --account=r_mdnakh 
-#SBATCH --nodelist=virya3 
-#SBATCH --mem=100M 
-#SBATCH -o _%x%J.txt
+#SBATCH -J Test-GPUs --mem=100M --gpus=4 -w virya4
 
-source /etc/profile.d/modules.sh 
-module load anaconda/3.2022.10
-python runtotal.py Collections
-# python runtotal.py JacksonXml
+source /etc/profile.d/modules.sh
+module load anaconda/3.2023.03
+python runtotal.py Closure
