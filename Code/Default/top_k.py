@@ -40,6 +40,12 @@ def calculate_metrics(json_file):
 
     mfr_avg = np.mean(mfr_list)
     mar_avg = np.mean(mar_list)
+    print(f'Top-1: {top1}')
+    print(f'Top-3: {top3}')
+    print(f'Top-5: {top5}')
+    print(f'Top-10: {top10}')
+    print(f'MFR: {mfr_avg}')
+    print(f'MAR: {mar_avg}')
 
     return {
         'Top-1': top1,
