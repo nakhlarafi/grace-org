@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Array of MIDs
-# MIDs=("Cli" "Codec" "Collections" "Compress" "Csv" "Gson" "JacksonCore" "JacksonXml" "Jsoup" "Math" "Mockito")
-MIDs=("Closure")
+MIDs=("Cli" "Codec" "Collections" "Compress" "Csv" "Gson" "JacksonCore" "JacksonXml" "Jsoup" "Lang" "Math" "Mockito" "Time")
+# MIDs=("Closure")
 
 # List of project names
-projects=("Cli" "Codec" "Collections" "Compress" "Csv" "Gson" "JacksonCore" "JacksonXml" "Jsoup" "Lang" "Math" "Mockito" "Time")
-
+# projects=("Cli" "Codec" "Collections" "Compress" "Csv" "Gson" "JacksonCore" "JacksonXml" "Jsoup" "Lang" "Math" "Mockito" "Time")
+projects=("Closure")
 # Loop through each MID
 for MID in "${MIDs[@]}"; do
     echo "Processing MID: ${MID}"
