@@ -39,46 +39,119 @@ def splitCamel(token):
 p = pickle.load(open(pr + 'res_%d_%s_%s.pkl'%(seed,lr,batch_size), 'rb'))
 f = pickle.load(open(pr + '.pkl', 'rb'))
 
+# # print(len(f), len(p))
+# #assert(0)
+# score = []
+# score2 = []
+# eps = {}
+# best_ids = []
+# for _, i in enumerate(p):
+#     maxn = 1e9
+#     xs = p[i]
+#     score.extend(xs[0])
+#     minl = 1e9
+#     for x in f[i]['ans']:
+#         m = xs[1].index(x)
+#         minl = min(minl, m)
+#     score2.append(minl)
+#     rrdic = {}
+#     for x in xs[2]:
+#         if x in eps:
+#             eps[x] += 1
+#         else:
+#             eps[x] = 1
+#     if 10 in xs[2]:
+#         best_ids.append(i)
+#     #print(xs[2])
+#     #score.append(maxn)
+
+# # print(score)
+
+# with open(pr + 'result_final_%d_%s_%s'%(seed,lr, batch_size), 'w') as pp:
+#     pp.write("lr: %f seed %d batch_size %d\n"%(lr, seed, batch_size))
+#     pp.write('num: %s\n'%len(p))
+#     # pp.write('%d: %d\n'%(10, eps[10]))
+#     pp.write(str(sorted(eps.items(), key=lambda x:x[1])))
+
+# # print(len(score))
+# a = []
+# for i, x in enumerate(score):
+#     if x != 0:
+#         a.append(i)
+
+# c1 = 0
+# for x in score:
+#     if x < 3:
+#         c1 += 1
+# c2 = 0
+# for x in score:
+#     if x < 5:
+#         c2 += 1
+
+
+best_epoch = sorted(eps.items(), key=lambda x:x[1])[-1][0]
 project_data = {"projects": []}
 project_entry = {"name": pr, "bugs": []}
-
-# Iterating over the predictions and the actual answers
-for idx, xs in enumerate(p):
-    best_epoch = sorted(xs[2].items(), key=lambda x: x[1], reverse=True)[0][0]  # Finding the best epoch based on some criteria
-    best_pred = xs[3][best_epoch]  # Best predictions for the current bug
-    score_pred = xs[3][f"{best_epoch}_pred"]  # Assuming structure
-    correct_answers = f[idx]['ans']  # Assuming structure
-    
-    # Calculating top-k metrics
-    ranks = [best_pred.index(ans) if ans in best_pred else float('inf') for ans in correct_answers]
-    top1 = int(any(rank == 0 for rank in ranks))
-    top3 = int(any(rank < 3 for rank in ranks))
-    top5 = int(any(rank < 5 for rank in ranks))
-    top10 = int(any(rank < 10 for rank in ranks))
-    mfr = min(ranks) if ranks else None
-    mar = np.mean(ranks) if ranks else None
-
-    # Adding each bug's details and top-k metrics to the project entry
-    bug_entry = {
-        "bug_id": dmap[pr][idx],  # Assuming dmap is defined elsewhere
-        "ground_truth": correct_answers,
-        "methods": [{
-            "method_signature": method,
-            "suspicious_rank": score_pred.get(rank, 0),
-            "method_id": rank
-        } for method, rank in enumerate(best_pred)],  # This might need to be adjusted based on your data structure
-        "top1": top1,
-        "top3": top3,
-        "top5": top5,
-        "top10": top10,
-        "mfr": mfr,
-        "mar": mar
-    }
-    project_entry["bugs"].append(bug_entry)
-
+top1 = 0
+top3 = 0
+top5 = 0
+top10 = 0
+mfr = []
+mar = []
+for idx in p:
+    xs = p[idx]
+    each_epoch_pred = xs[3]
+    best_pred = each_epoch_pred[best_epoch]
+    score_pred = each_epoch_pred[str(best_epoch)+'_pred']
+    # print('-'*20)
+    print('Project Number:', dmap[pr][idx])
+    print('Correct Answer:', f[idx]['ans'])
+    for d in f:
+        if d['proj'] == pr+str(dmap[pr][idx]):
+            bug_entry = {"bug_id": dmap[pr][idx], "ground_truth": f[idx]['ans'], "methods": []}
+            for method, rank in d['methods'].items():
+                method_entry = {
+                    "method_signature": method,
+                    "suspicious_rank": score_pred.get(rank, 0),
+                    "method_id": rank  # Default 0 if not found
+                }
+                bug_entry["methods"].append(method_entry)
+            project_entry["bugs"].append(bug_entry)
+    print(best_pred)
+    print(score_pred)
+    ar = []
+    minl = 1e9
+    to1 = 0
+    to3 = 0
+    to5 = 0
+    to10 = 0
+    for x in f[idx]['ans']:
+        m = best_pred.index(x)
+        ar.append(m)
+        minl = min(minl, m)
+    if minl == 0:
+        top1 += 1
+        to1 = 1
+    if minl < 3:
+        top3 += 1
+        to3 = 1
+    if minl < 5:
+        top5 += 1
+        to5 = 1
+    if minl < 10:
+        top10 += 1
+        to10 = 1
+    mfr.append(minl)
+    mar.append(np.mean(ar))
+    # print('Top1:', to1)
+    # print('Top3:', to3)
+    # print('Top5:', to5)
+    # print('Top10:', to10)
+    # print('-'*20)
 project_data["projects"].append(project_entry)
 
-# Write to JSON file
-json_file_path = os.path.join(f'{pr}_rank_with_topk.json')
+# Write to JSON file in the result directory
+json_file_path = os.path.join(f'{pr}_rank.json')
 with open(json_file_path, 'w') as json_file:
     json.dump(project_data, json_file, indent=4)
+
