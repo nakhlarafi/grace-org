@@ -39,7 +39,57 @@ def splitCamel(token):
 p = pickle.load(open(pr + 'res_%d_%s_%s.pkl'%(seed,lr,batch_size), 'rb'))
 f = pickle.load(open(pr + '.pkl', 'rb'))
 
+# print(len(f), len(p))
+#assert(0)
+score = []
+score2 = []
+eps = {}
+best_ids = []
+for _, i in enumerate(p):
+    maxn = 1e9
+    xs = p[i]
+    score.extend(xs[0])
+    minl = 1e9
+    for x in f[i]['ans']:
+        m = xs[1].index(x)
+        minl = min(minl, m)
+    score2.append(minl)
+    rrdic = {}
+    for x in xs[2]:
+        if x in eps:
+            eps[x] += 1
+        else:
+            eps[x] = 1
+    if 10 in xs[2]:
+        best_ids.append(i)
+    #print(xs[2])
+    #score.append(maxn)
 
+# print(score)
+
+with open(pr + 'result_final_%d_%s_%s'%(seed,lr, batch_size), 'w') as pp:
+    pp.write("lr: %f seed %d batch_size %d\n"%(lr, seed, batch_size))
+    pp.write('num: %s\n'%len(p))
+    # pp.write('%d: %d\n'%(10, eps[10]))
+    pp.write(str(sorted(eps.items(), key=lambda x:x[1])))
+
+# print(len(score))
+a = []
+for i, x in enumerate(score):
+    if x != 0:
+        a.append(i)
+
+c1 = 0
+for x in score:
+    if x < 3:
+        c1 += 1
+c2 = 0
+for x in score:
+    if x < 5:
+        c2 += 1
+
+
+best_epoch = sorted(eps.items(), key=lambda x:x[1])[-1][0]
 project_data = {"projects": []}
 project_entry = {"name": pr, "bugs": [], "top1": 0, "top3": 0, "top5": 0, "mfr": 0, "mar": 0}
 
@@ -47,12 +97,13 @@ total_top1 = total_top3 = total_top5 = 0
 mfr_list = []
 mar_list = []
 
-for idx, bug_data in enumerate(f['bugs']):
+# Assuming f is a list of bug data
+for idx, bug_data in enumerate(f):
     bug_pred = p[idx]
     bug_id = dmap[pr][idx]
-    correct_answers = bug_data['ans']
+    correct_answers = bug_data['ans']  # Assuming each element in f has an 'ans' key
     
-    ranks = [bug_pred.index(ans) for ans in correct_answers if ans in bug_pred] + [len(bug_pred)] * (len(correct_answers) - len(ranks))
+    ranks = [bug_pred.index(ans) for ans in correct_answers if ans in bug_pred] + [len(bug_pred)] * (len(correct_answers) - len([ans for ans in correct_answers if ans in bug_pred]))
     top1 = any(rank == 0 for rank in ranks)
     top3 = any(rank < 3 for rank in ranks)
     top5 = any(rank < 5 for rank in ranks)
@@ -77,7 +128,7 @@ for idx, bug_data in enumerate(f['bugs']):
     }
     project_entry['bugs'].append(bug_entry)
 
-# Calculate aggregate metrics
+# Aggregate metrics for the project
 project_entry['top1'] = total_top1
 project_entry['top3'] = total_top3
 project_entry['top5'] = total_top5
