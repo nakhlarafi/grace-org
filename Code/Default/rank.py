@@ -41,23 +41,21 @@ f = pickle.load(open(pr + '.pkl', 'rb'))
 
 
 project_data = {"projects": []}
-project_entry = {"name": pr, "bugs": [], "top1": 0, "top3": 0, "top5": 0, "mfr": [], "mar": []}
+project_entry = {"name": pr, "bugs": [], "top1": 0, "top3": 0, "top5": 0, "mfr": 0, "mar": 0}
 
-# Variables to store aggregated metrics
 total_top1 = total_top3 = total_top5 = 0
-mfr_list = mar_list = []
+mfr_list = []
+mar_list = []
 
-# Process each bug
-for idx, bug_data in enumerate(f['bugs']):  # Assuming structure
+for idx, bug_data in enumerate(f['bugs']):
     bug_pred = p[idx]
     bug_id = dmap[pr][idx]
     correct_answers = bug_data['ans']
     
-    # Calculate top-k metrics for each bug
-    ranks = [bug_pred.index(ans) if ans in bug_pred else len(bug_pred) for ans in correct_answers]
-    top1 = int(any(rank == 0 for rank in ranks))
-    top3 = int(any(rank < 3 for rank in ranks))
-    top5 = int(any(rank < 5 for rank in ranks))
+    ranks = [bug_pred.index(ans) for ans in correct_answers if ans in bug_pred] + [len(bug_pred)] * (len(correct_answers) - len(ranks))
+    top1 = any(rank == 0 for rank in ranks)
+    top3 = any(rank < 3 for rank in ranks)
+    top5 = any(rank < 5 for rank in ranks)
     
     total_top1 += top1
     total_top3 += top3
@@ -69,11 +67,17 @@ for idx, bug_data in enumerate(f['bugs']):  # Assuming structure
     mfr_list.append(mfr)
     mar_list.append(mar)
     
-    # Add bug-specific data to project_entry
-    bug_entry = {"bug_id": bug_id, "top1": top1, "top3": top3, "top5": top5, "mfr": mfr, "mar": mar}
+    bug_entry = {
+        "bug_id": bug_id,
+        "top1": top1,
+        "top3": top3,
+        "top5": top5,
+        "mfr": mfr,
+        "mar": mar
+    }
     project_entry['bugs'].append(bug_entry)
 
-# Aggregate metrics for the project
+# Calculate aggregate metrics
 project_entry['top1'] = total_top1
 project_entry['top3'] = total_top3
 project_entry['top5'] = total_top5
@@ -82,9 +86,6 @@ project_entry['mar'] = np.mean(mar_list)
 
 project_data["projects"].append(project_entry)
 
-# Save to JSON
-json_file_path = os.path.join(f'{pr}_results.json')
+json_file_path = os.path.join(f'{pr}_results_with_topk.json')
 with open(json_file_path, 'w') as json_file:
     json.dump(project_data, json_file, indent=4)
-
-# Please ensure the data loading and calculation logic matches your data's actual structure
