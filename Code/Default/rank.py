@@ -70,7 +70,7 @@ for idx in p:
     print('Correct Answer:', f[idx]['ans'])
 
     # Initialize top-k indicators for this bug
-    top_k = {"top1": False, "top3": False, "top5": False}
+    top_k = {"top1": 0, "top3": 0, "top5": 0}
     ar = []
     minl = 1e9
 
@@ -80,9 +80,9 @@ for idx in p:
         minl = min(minl, m)
     
     # Update top-k indicators based on minl
-    top_k["top1"] = minl < 1
-    top_k["top3"] = minl < 3
-    top_k["top5"] = minl < 5
+    top_k["top1"] = int(minl < 1)
+    top_k["top3"] = int(minl < 3)
+    top_k["top5"] = int(minl < 5)
 
     # Assuming f is a list and you iterate it to match 'proj' with pr+str(dmap[pr][idx])
     for d in f:
