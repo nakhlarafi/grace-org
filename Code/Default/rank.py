@@ -50,31 +50,6 @@ for _, i in enumerate(p):
             eps[x] = 1
     if 10 in xs[2]:
         best_ids.append(i)
-    #print(xs[2])
-    #score.append(maxn)
-
-# print(score)
-
-# with open(pr + 'result_final_%d_%s_%s'%(seed,lr, batch_size), 'w') as pp:
-#     pp.write("lr: %f seed %d batch_size %d\n"%(lr, seed, batch_size))
-#     pp.write('num: %s\n'%len(p))
-#     # pp.write('%d: %d\n'%(10, eps[10]))
-#     pp.write(str(sorted(eps.items(), key=lambda x:x[1])))
-
-# print(len(score))
-# a = []
-# for i, x in enumerate(score):
-#     if x != 0:
-#         a.append(i)
-
-# c1 = 0
-# for x in score:
-#     if x < 3:
-#         c1 += 1
-# c2 = 0
-# for x in score:
-#     if x < 5:
-#         c2 += 1
 
 
 best_epoch = sorted(eps.items(), key=lambda x:x[1])[-1][0]
@@ -91,12 +66,33 @@ for idx in p:
     each_epoch_pred = xs[3]
     best_pred = each_epoch_pred[best_epoch]
     score_pred = each_epoch_pred[str(best_epoch)+'_pred']
-    # print('-'*20)
     print('Project Number:', dmap[pr][idx])
     print('Correct Answer:', f[idx]['ans'])
+
+    # Initialize top-k indicators for this bug
+    top_k = {"top1": False, "top3": False, "top5": False}
+    ar = []
+    minl = 1e9
+
+    for x in f[idx]['ans']:
+        m = best_pred.index(x)
+        ar.append(m)
+        minl = min(minl, m)
+    
+    # Update top-k indicators based on minl
+    top_k["top1"] = minl < 1
+    top_k["top3"] = minl < 3
+    top_k["top5"] = minl < 5
+
+    # Assuming f is a list and you iterate it to match 'proj' with pr+str(dmap[pr][idx])
     for d in f:
         if d['proj'] == pr+str(dmap[pr][idx]):
-            bug_entry = {"bug_id": dmap[pr][idx], "ground_truth": f[idx]['ans'], "methods": []}
+            bug_entry = {
+                "bug_id": dmap[pr][idx],
+                "ground_truth": f[idx]['ans'],
+                "methods": [],
+                "top_k": top_k  # Include top-k results here
+            }
             for method, rank in d['methods'].items():
                 method_entry = {
                     "method_signature": method,
@@ -105,41 +101,10 @@ for idx in p:
                 }
                 bug_entry["methods"].append(method_entry)
             project_entry["bugs"].append(bug_entry)
-    # print(best_pred)
-    # print(score_pred)
-    ar = []
-    minl = 1e9
-    to1 = 0
-    to3 = 0
-    to5 = 0
-    to10 = 0
-    for x in f[idx]['ans']:
-        m = best_pred.index(x)
-        ar.append(m)
-        minl = min(minl, m)
-    if minl == 0:
-        top1 += 1
-        to1 = 1
-    if minl < 3:
-        top3 += 1
-        to3 = 1
-    if minl < 5:
-        top5 += 1
-        to5 = 1
-    if minl < 10:
-        top10 += 1
-        to10 = 1
-    mfr.append(minl)
-    mar.append(np.mean(ar))
-    # print('Top1:', to1)
-    # print('Top3:', to3)
-    # print('Top5:', to5)
-    # print('Top10:', to10)
-    # print('-'*20)
+
 project_data["projects"].append(project_entry)
 
 # Write to JSON file in the result directory
 json_file_path = os.path.join(f'{pr}_rank.json')
 with open(json_file_path, 'w') as json_file:
     json.dump(project_data, json_file, indent=4)
-
