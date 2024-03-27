@@ -91,52 +91,67 @@ for x in score:
 
 best_epoch = sorted(eps.items(), key=lambda x:x[1])[-1][0]
 project_data = {"projects": []}
-project_entry = {"name": pr, "bugs": [], "top1": 0, "top3": 0, "top5": 0, "mfr": 0, "mar": 0}
-
-total_top1 = total_top3 = total_top5 = 0
-mfr_list = []
-mar_list = []
-
-# Assuming f is a list of bug data
-for idx, bug_data in enumerate(f):
-    bug_pred = p[idx]
-    bug_id = dmap[pr][idx]
-    correct_answers = bug_data['ans']  # Assuming each element in f has an 'ans' key
-    
-    ranks = [bug_pred.index(ans) for ans in correct_answers if ans in bug_pred] + [len(bug_pred)] * (len(correct_answers) - len([ans for ans in correct_answers if ans in bug_pred]))
-    top1 = any(rank == 0 for rank in ranks)
-    top3 = any(rank < 3 for rank in ranks)
-    top5 = any(rank < 5 for rank in ranks)
-    
-    total_top1 += top1
-    total_top3 += top3
-    total_top5 += top5
-    
-    mfr = min(ranks)
-    mar = np.mean(ranks)
-    
-    mfr_list.append(mfr)
-    mar_list.append(mar)
-    
-    bug_entry = {
-        "bug_id": bug_id,
-        "top1": top1,
-        "top3": top3,
-        "top5": top5,
-        "mfr": mfr,
-        "mar": mar
-    }
-    project_entry['bugs'].append(bug_entry)
-
-# Aggregate metrics for the project
-project_entry['top1'] = total_top1
-project_entry['top3'] = total_top3
-project_entry['top5'] = total_top5
-project_entry['mfr'] = np.mean(mfr_list)
-project_entry['mar'] = np.mean(mar_list)
-
+project_entry = {"name": pr, "bugs": []}
+top1 = 0
+top3 = 0
+top5 = 0
+top10 = 0
+mfr = []
+mar = []
+for idx in p:
+    xs = p[idx]
+    each_epoch_pred = xs[3]
+    best_pred = each_epoch_pred[best_epoch]
+    score_pred = each_epoch_pred[str(best_epoch)+'_pred']
+    # print('-'*20)
+    print('Project Number:', dmap[pr][idx])
+    print('Correct Answer:', f[idx]['ans'])
+    for d in f:
+        if d['proj'] == pr+str(dmap[pr][idx]):
+            bug_entry = {"bug_id": dmap[pr][idx], "ground_truth": f[idx]['ans'], "methods": []}
+            for method, rank in d['methods'].items():
+                method_entry = {
+                    "method_signature": method,
+                    "suspicious_rank": score_pred.get(rank, 0),
+                    "method_id": rank  # Default 0 if not found
+                }
+                bug_entry["methods"].append(method_entry)
+            project_entry["bugs"].append(bug_entry)
+    print(best_pred)
+    print(score_pred)
+    ar = []
+    minl = 1e9
+    to1 = 0
+    to3 = 0
+    to5 = 0
+    to10 = 0
+    for x in f[idx]['ans']:
+        m = best_pred.index(x)
+        ar.append(m)
+        minl = min(minl, m)
+    if minl == 0:
+        top1 += 1
+        to1 = 1
+    if minl < 3:
+        top3 += 1
+        to3 = 1
+    if minl < 5:
+        top5 += 1
+        to5 = 1
+    if minl < 10:
+        top10 += 1
+        to10 = 1
+    mfr.append(minl)
+    mar.append(np.mean(ar))
+    # print('Top1:', to1)
+    # print('Top3:', to3)
+    # print('Top5:', to5)
+    # print('Top10:', to10)
+    # print('-'*20)
 project_data["projects"].append(project_entry)
 
-json_file_path = os.path.join(f'{pr}_results_with_topk.json')
+# Write to JSON file in the result directory
+json_file_path = os.path.join(f'{pr}_rank.json')
 with open(json_file_path, 'w') as json_file:
     json.dump(project_data, json_file, indent=4)
+
