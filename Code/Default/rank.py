@@ -36,9 +36,9 @@ def splitCamel(token):
                 tmp += x.lower()
         ans.append(tmp)
         return ans
-# Load the model and project data
-p = pickle.load(open(pr + 'res_%d_%f_%d.pkl' % (seed, lr, batch_size), 'rb'))
+p = pickle.load(open(pr + 'res_%d_%s_%s.pkl'%(seed,lr,batch_size), 'rb'))
 f = pickle.load(open(pr + '.pkl', 'rb'))
+
 
 project_data = {"projects": []}
 project_entry = {"name": pr, "bugs": [], "top1": 0, "top3": 0, "top5": 0, "mfr": [], "mar": []}
